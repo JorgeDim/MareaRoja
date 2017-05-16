@@ -1,5 +1,11 @@
 #pragma once
 
+#if defined _WIN32 || defined _WIN64s
+   #define mkdir(x,y) _mkdir((x))
+   #define rmdir(x) _rmdir((x))
+
+#endif
+
 #include <sstream>
 
 extern double ThetaMax;
@@ -1078,7 +1084,9 @@ void LecturaArchivoDeDatos() {
 	myfile.close();
 	if (errordatos==1) {
 
+#if defined _WIN32 || defined _WIN64s
 		MessageBox( 0, mensajeE, "Error Grave en Archivo de Datos", 0 );
+#endif
 		exit(1);
 	}
 
@@ -1174,7 +1182,7 @@ void SaveOrRead(char *ifile_name,int iSaveReadMode) {
 		sprintf(FDatos,"%sEtapa=00_Parametros.dat",leyendo2);
 		cout<<FDatos<<endl;
 
-		_rmdir(FDatos);
+		rmdir(FDatos);
 		ofstream myfile;
 		myfile.open (FDatos);
 

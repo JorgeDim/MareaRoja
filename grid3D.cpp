@@ -6,10 +6,21 @@
 #include "Macros.h"
 #include <omp.h>
 
-#include "GL/freeglut.h"
-#define GLUI_FREEGLUT 1
+#ifdef __APPLE__
+    #include "TargetConditionals.h"
+    #ifdef TARGET_OS_MAC
+        #include <GLUT/glut.h>
+        #include <OpenGL/OpenGL.h>
+		#include "GLUI/glui.h"
+    #endif
+#elif defined _WIN32 || defined _WIN64
+	#include "GL/freeglut.h"
+	#define GLUI_FREEGLUT 1
+	//#include <GL\glut.h>
+	#include "GL/glui.h"
+#endif
+
 //#include "GL/glut.h"
-#include "GL/glui.h"
 
 extern char  text[200];
 
@@ -2171,7 +2182,7 @@ void grid3D::drawVelGL_TriPrisma(vector<double> U,vector<double> V,vector<double
 	primerdrawVelGL=0;
 	ipasadas++;
 
-#pragma omp parallel for num_threads(10)
+#pragma omp parallel for num_threads(7)
 	for (i=0;i<nParticulas;i++) {
 		int pj,pk,pjmin;
 		float pd2min,pd2,px,py,pz,pdx,pdy,pdz;
