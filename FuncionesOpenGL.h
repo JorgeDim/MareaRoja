@@ -3,9 +3,18 @@
 #define FUNCIONES_OPENGL_JSM 1
 #include <math.h>
 #include <string.h>
-#include "GL/freeglut.h"
-#define GLUI_FREEGLUT 1
-//#include "GL/glut.h"
+#ifdef __APPLE__
+    #include "TargetConditionals.h"
+    #ifdef TARGET_OS_MAC
+        #include <GLUT/glut.h>
+        #include <OpenGL/OpenGL.h>
+    #endif
+#elif defined _WIN32 || defined _WIN64
+	#include "GL/freeglut.h"
+	//#include <GL\glut.h>
+	#define GLUI_FREEGLUT 1
+	//#include "GL/glut.h"
+#endif
 
 extern GLuint baseF; 
 extern GLuint baseBIT; 

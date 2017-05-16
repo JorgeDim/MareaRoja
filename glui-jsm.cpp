@@ -15,10 +15,17 @@
 #include <string.h>
 #include <assert.h>
 #include <time.h>
-#include <sys\timeb.h>
+#include <sys/timeb.h>
 
 #include "glui-jsm.h"
 #include "Macros.h"
+
+
+
+#ifdef _WIN32 || defined _WIN64
+   #define getcwd _getcwd
+
+#endif
 
 extern char  texto[200];
 int var_live_disk=0;
@@ -101,6 +108,7 @@ GLUI_FileBrowser2::GLUI_FileBrowser2( GLUI_Node *parent,
 	this->disk=new GLUI_Listbox(this,"Disco",&var_live_disk,12, cb );
 	this->disk->do_selection(2);
 
+#if defined _WIN32 || defined _WIN64
 	 DWORD drives = GetLogicalDrives();
 	 for (int i=0; i<26; i++)
 	 {
@@ -116,6 +124,7 @@ GLUI_FileBrowser2::GLUI_FileBrowser2( GLUI_Node *parent,
 	 }
 
 	 if (DBG) cout<<"this->disk->can_activate="<<this->disk->can_activate<<endl;
+#endif
 
 
 	new GLUI_Column( this, false );
@@ -146,7 +155,7 @@ GLUI_FileBrowser2::GLUI_FileBrowser2( GLUI_Node *parent,
 
 	{
 		char cCurrentPath[FILENAME_MAX];
-		_getcwd(cCurrentPath, sizeof(cCurrentPath));
+		getcwd(cCurrentPath, sizeof(cCurrentPath));
 
 		cCurrentPath[sizeof(cCurrentPath) - 1] = '\0'; /* not really required */
 
@@ -159,6 +168,7 @@ GLUI_FileBrowser2::GLUI_FileBrowser2( GLUI_Node *parent,
 
 }
 
+#if defined _WIN32 || defined _WIN64
 void  char2LPCWSTR(const char *charstring ,LPCWSTR lpcwstr )
 {
 	std::wstring widestring;
@@ -167,6 +177,7 @@ void  char2LPCWSTR(const char *charstring ,LPCWSTR lpcwstr )
 		widestring += (wchar_t)charstring[i];
 	lpcwstr = widestring.c_str();
 }
+#endif
 
 
 void GLUI_FileBrowser2::control_cb( GLUI_Control *glui_object)
@@ -271,7 +282,7 @@ void GLUI_FileBrowser2::control_cb( GLUI_Control *glui_object)
 
 		 char cCurrentPath[FILENAME_MAX];
 
-		_getcwd(cCurrentPath, sizeof(cCurrentPath));
+		getcwd(cCurrentPath, sizeof(cCurrentPath));
 
 		cCurrentPath[sizeof(cCurrentPath) - 1] = '\0'; /* not really required */
 

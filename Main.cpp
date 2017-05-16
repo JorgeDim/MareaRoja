@@ -5,17 +5,30 @@
 #include <cstring>
 #include <string>
 #include <vector>
+#ifdef __APPLE__
+    #include "TargetConditionals.h"
+    #ifdef TARGET_OS_MAC
+        #include <GLUT/glut.h>
+        #include <OpenGL/OpenGL.h>
+//        #define mkdir(x) system(sprintf("mkdir %s",((x))))
+    #endif
+#elif defined _WIN32 || defined _WIN64
+	#include "GL/freeglut.h"
+	//#include <GL\glut.h>
+	#define GLUI_FREEGLUT 1
+	//#include "GL/glut.h"
+	//#ifdef _WIN32
+	#include <windows.h>
+	#include <Commdlg.h>
+   #define mkdir(x,y) _mkdir((x))
+   #define rmdir(x) _rmdir((x))
+   #define getcwd _getcwd
 
-#include "GL/freeglut.h"
-#define GLUI_FREEGLUT 1
-//#include "GL/glut.h"
-#include "GL/glui.h"
+#endif
+
 #include <stdio.h>
 #include "globales.h"
-//#ifdef _WIN32
-#include <windows.h>
 #include <iomanip>
-#include <Commdlg.h>
 using namespace std;
 //#endif
 
@@ -39,6 +52,7 @@ char  text[200000] = {"Hello World!"};
 
 
 
+#if defined _WIN32 || defined _WIN64s
 string  GetFileName( const string & prompt ) {
     const int BUFSIZE = 1024;
     char buffer[BUFSIZE] = {0};
@@ -50,6 +64,7 @@ string  GetFileName( const string & prompt ) {
     GetOpenFileName( & ofns );
     return buffer;
 }
+#endif
 
 void calculaFracionVolumen(vector<double> &Temp) {
 	int i;
@@ -991,6 +1006,8 @@ PAUSAF
 void NuevaLecturaDeDatos() {
 
 
+#if defined _WIN32 || defined _WIN64s
+
 	string fname = GetFileName( "Number which file: " );
 /*	ifstream ifs( fname.c_str() );
 	if ( ! ifs.is_open() ) {
@@ -1016,6 +1033,7 @@ void NuevaLecturaDeDatos() {
 		}
 		*/
 	//}
+#endif
 
 }
 
@@ -1262,12 +1280,12 @@ int main(int argc,char **argv)
 	int i;
 	cout<<"argc="<<argc<<endl;
 	cout<<"argv[0]="<<argv[0]<<endl;
-	cout<<"_getcwd="<<_getcwd<<endl;
+	cout<<"_getcwd="<<getcwd<<endl;
 
 	char cCurrentPath[FILENAME_MAX];
 
 
-	 if (!_getcwd(cCurrentPath, sizeof(cCurrentPath)))
+	 if (!getcwd(cCurrentPath, sizeof(cCurrentPath)))
 	     {
 	     return errno;
 	     }
@@ -1350,18 +1368,22 @@ int main(int argc,char **argv)
 
 		char nombre[100];
 		sprintf(nombre,"%s_t_porcentaje.dat",nombre0);
-		_mkdir("/Soluciones");
-		_rmdir(nombre);
+
+
+		mkdir("/Soluciones", 0755 );
+		rmdir(nombre);
+
+
 		myfileVol.open (nombre);
 		sprintf(nombre,"%s_Salida.dat",nombre0);
-		_rmdir(nombre);
+		rmdir(nombre);
 		myfileSalida.open (nombre);
 
 		myfileSalida<<mensajes0;
 
 
 		sprintf(nombre,"%s_Etapa=%02d_Parametros.dat",nombre0,0);
-		_rmdir(nombre);
+		rmdir(nombre);
 		ofstream myfile;
 		myfile.open (nombre);
 
@@ -1392,7 +1414,7 @@ int main(int argc,char **argv)
 		LecturaArchivoDeDatos_Post(cout);
 		int anchoT,altoT;
 
-		anchoT=glutGet(GLUT_SCREEN_WIDTH);
+		anchoT=glutGet(GLUT_SCREEN_WIDTH);if (anchoT>1980) anchoT=1980;
 
 		altoT=glutGet(GLUT_SCREEN_HEIGHT);
 
@@ -1478,7 +1500,7 @@ void GuardarInstantanea() {
 	} else {
 		sprintf(nombre,"%s_Etapa=%02d_Size=%d_t=%.0f.dat",nombre0,EtapaGlobal,gtotal->nH3D,TiempoCalculo);
 	}
-	_rmdir(nombre);
+	rmdir(nombre);
 
 
 	cout<<"Save:"<<nombre<<endl;
@@ -1622,7 +1644,7 @@ void   formulario_glui()
 	glui->add_checkbox("[ ] NumH ",&MODO_NumeraH);
 //	glui->add_checkbox("[ ] NumFF ",&MODO_NumeraFF); //Eliminado en Version 1
 
-	if (1==1) { // Formulario para abrir archivo
+	if (1==0) { // Formulario para abrir archivo
 		glui2 = GLUI_Master.create_glui("GLUI Window");
 
 		cout<<"glui2->glui_id="<<glui2->get_glut_window_id()<<endl;
@@ -1795,8 +1817,8 @@ void fbreaddir2(GLUI_FileBrowser *fb, const char *d) {
 	struct dirent *dirp;
 	struct stat dr;
 
-	if (list) {
-		list->delete_all();
+	if (fb->list) {
+		fb->list->delete_all();
 		if ((dir = opendir(d)) == NULL)
 			perror("fbreaddir:");
 		else {
@@ -1807,7 +1829,7 @@ void fbreaddir2(GLUI_FileBrowser *fb, const char *d) {
 				else
 					item = dirp->d_name;
 
-				list->add_item(i,item.c_str());
+				fb->list->add_item(i,item.c_str());
 				i++;
 			}
 			closedir(dir);

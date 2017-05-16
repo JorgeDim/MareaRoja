@@ -5,14 +5,30 @@
 //#include "../../EjemploOpenGL/src/FuncionesOpenGL.h"
 #include "grid3D.h"
 
-#include "GL/freeglut.h"
-#define GLUI_FREEGLUT 1
+#ifdef __APPLE__
+    #include "TargetConditionals.h"
+    #ifdef TARGET_OS_MAC
+        #include <GLUT/glut.h>
+        #include <OpenGL/OpenGL.h>
+		#include "GLUI/glui.h"
+
+    #endif
+#elif defined _WIN32 || defined _WIN64
+	#include "GL/freeglut.h"
+	//#include <GL\glut.h>
+	#define GLUI_FREEGLUT 1
+	//#include "GL/glut.h"
+	#include "GL/glui.h"
+
+#endif
+
+
+
 
 #include "FuncionesOpenGL.h"
 //#include "../../Libreria-JSM/Class_Vector.h"
 #include "Class_Vector.h"
 
-#include "GL/glui.h"
 #include "glui-jsm.h"
 
 #include "Macros.h"
