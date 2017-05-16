@@ -2061,6 +2061,9 @@ void grid3D::PosINI(int i)
 
 	if (multiplode3==0) {
 		j=(   (double)rand() / ((double)(RAND_MAX)+(double)(1)) )* (nTriPrisma3D/3);
+		if (i==0) {
+			j=300;
+		}
 		jprevio=3*j-1;
 		Hz=-v3D[TriPrisma3D[3*j].iv[0]].z;
 		deltade3=0;
