@@ -2212,7 +2212,8 @@ void grid3D::drawVelGL_TriPrisma(vector<double> U,vector<double> V,vector<double
 			pdy=V[pjmin]*dt/npasadas*factorV/UUU*factorVh;
 			pdz=W[pjmin]*dt/npasadas*factorV/UUU*factorVh*100/6.0;
 			if (i==1) {
-				cout << "i="<<i<<"  UUU="<<UUU<<endl;
+				cout << "i="<<i<<"  UUU="<<UUU<<" pdx="<<pdx<<" dt="<<dt<<" npasadas="<<npasadas
+						<<" factorV="<<factorV<<" factorVh"<<factorVh<<endl;
 			}
 
 			if (ipasadas>npasadas) {
