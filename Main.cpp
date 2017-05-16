@@ -1585,6 +1585,7 @@ void   formulario_glui()
 	tsp=glui->add_spinner("FactorNormales",GLUI_SPINNER_FLOAT, &FactorNormales);
 	tsp=glui->add_spinner("FactorSuavidad",GLUI_SPINNER_FLOAT, &FactorSuavidad);
 	tsp=glui->add_spinner("FactorAchica",GLUI_SPINNER_FLOAT, &lambdaCara);
+	tsp->set_float_limits(0,1);
 
 
 	glui->add_statictext( "" );
