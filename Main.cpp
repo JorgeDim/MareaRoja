@@ -20,8 +20,8 @@
 	//#ifdef _WIN32
 	#include <windows.h>
 	#include <Commdlg.h>
-   #define mkdir(x,y) _mkdir((x))
-   #define rmdir(x) _rmdir((x))
+//   #define mkdir(x,y) _mkdir((x))
+//   #define rmdir(x) _rmdir((x))
    #define getcwd _getcwd
 
 #endif
