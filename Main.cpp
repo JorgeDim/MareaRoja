@@ -1562,6 +1562,7 @@ void   formulario_glui()
 	///// Test de algunas Variables
 	tsp=glui->add_spinner("FactorNormales",GLUI_SPINNER_FLOAT, &FactorNormales);
 	tsp=glui->add_spinner("FactorSuavidad",GLUI_SPINNER_FLOAT, &FactorSuavidad);
+	tsp=glui->add_spinner("FactorAchica",GLUI_SPINNER_FLOAT, &lambdaCara);
 
 
 	glui->add_statictext( "" );

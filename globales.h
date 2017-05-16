@@ -22,6 +22,7 @@ int NDivZ=2,nRLC=-1,nThLC=-1;
 int refinoR=0;
 char FDatos[100],mensajes0[10000];
 double FactorCercania=0.90;
+float lambdaCara=0.0;
 
 
 

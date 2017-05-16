@@ -45,6 +45,7 @@ extern int ModoDibujaFrontera;
 extern int Modo_DibujaCentroCaras;
 extern int Modo_DibujaCentroBloques;
 extern double Dominio_Rint,Dominio_Rmed,Dominio_Xmax,Dominio_Hsup;
+extern float lambdaCara;
 
 
 void filtracomentario(ifstream &myfile) {
@@ -2451,7 +2452,7 @@ void Cara3D::draw_caraGL() {
 
 
 	int li,signo,signo2=1;
-	double x[4],y[4],z[4],v[3],xg,yg,zg,lambda=0.0,nx,ny,nz,nxx,nyy,nzz,nnn;
+	double x[4],y[4],z[4],v[3],xg,yg,zg,nx,ny,nz,nxx,nyy,nzz,nnn;
 	GLdouble winX1,winY1,winX2,winY2,winX3,winY3,winZ,winZ2;
 	xg=0;yg=0;zg=0;
 
@@ -2460,14 +2461,20 @@ void Cara3D::draw_caraGL() {
 		x[li]=papa->v3D[iv[li]].x;
 		y[li]=papa->v3D[iv[li]].y;
 		z[li]=papa->v3D[iv[li]].z;
-		xg+=x[li]/nvCara;		yg+=y[li]/nvCara;		zg+=z[li]/nvCara;
-	}
-	for (li=0;li<nvCara;li++) {
-		x[li]+=(xg-x[li])*lambda;
-		y[li]+=(yg-y[li])*lambda;
-		z[li]+=(zg-z[li])*lambda;
+		//xg+=x[li]/nvCara;		yg+=y[li]/nvCara;		zg+=z[li]/nvCara;
 	}
 
+	xg= centro.x;
+	yg= centro.y;
+	zg= centro.z;
+
+	for (li=0;li<nvCara;li++) {
+		x[li]+=(xg-x[li])*lambdaCara;
+		y[li]+=(yg-y[li])*lambdaCara;
+		z[li]+=(zg-z[li])*lambdaCara;
+	}
+
+#if 1==0
 	// Si funciona
 	if (nvCara>3) {
 		nxx=nx=(y[2]-y[0])*(z[3]-z[1])-(z[2]-z[0])*(y[3]-y[1]);
@@ -2483,9 +2490,9 @@ void Cara3D::draw_caraGL() {
 	nxx/=nnn;
 	nyy/=nnn;
 	nzz/=nnn;
+#endif
 
-
-	//Version que no funciona
+	//Version que tambien funciona pero más rápido!!
 	nxx=normalCara.x;
 	nyy=normalCara.y;
 	nzz=normalCara.z;
