@@ -553,7 +553,9 @@ PAUSA;
 				Checkbox_particulas->enable();
 				PanelParticulas->enable();
 			}
-			Etapa--;
+
+PAUSA;
+			Etapa--; //Ultima etapa por ahora
 PAUSA;
 
 		EtapaGlobal=ETAPA_CALCULO_T_ARRIBA;EtapaGlobal2Local=Etapa;
