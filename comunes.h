@@ -742,7 +742,7 @@ void CB_mouse(int button, int state, int x, int y)
 
 	//	printf("CB_mouse: button=%d, state=%d, x=%d, y=%d\n",button,state,x,y);
 	KeyControlAltShift = glutGetModifiers();
-	printf("glutGetModifiers=%d\n",KeyControlAltShift);	cout<<endl;
+	printf("glutGetModifiers=%d",KeyControlAltShift);	cout<<endl;
 
 
 	if (state==GLUT_UP) {iPush=0;}
@@ -846,7 +846,7 @@ void CB_mouse(int button, int state, int x, int y)
 
 	}
 
-
+	cout<<"CB_mouse()END: iPush="<<iPush<<endl;
 
 }
 
@@ -864,6 +864,8 @@ void CB_motion(int x, int y)
 #endif
 
 	int lMODO_de_mover=MODO_de_mover;
+
+	cout<<"iPush="<<iPush<<" lMODO_de_mover="<<lMODO_de_mover<<" KeyControlAltShift="<<KeyControlAltShift<<endl;
 
 	if (KeyControlAltShift==GLUT_ACTIVE_CTRL)
 		lMODO_de_mover=0;
