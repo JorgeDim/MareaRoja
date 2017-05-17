@@ -752,7 +752,10 @@ void CB_mouse(int button, int state, int x, int y)
 		case GLUT_LEFT_BUTTON:
 
 			if (MODO_Rotacion2==0) iPush=1;
-			else iPush=3;
+			else {
+				cout<<"MODO_Rotacion2=="<<MODO_Rotacion2<<endl;
+				iPush=3;
+			}
 
 			if (KeyControlAltShift==GLUT_ACTIVE_CTRL) iPush=2;
 
