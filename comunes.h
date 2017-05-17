@@ -56,6 +56,7 @@ void MyDBG() {
 
 void print_text(int x, int y, char* s) 
 {
+	//cout<<"print_text(int "<<x<<", int "<<y<<", char* "<<s<<") "<<endl;
 	int lines;
 	char* p;
 	glDisable(GL_DEPTH_TEST);
@@ -272,6 +273,7 @@ void DrawGraphics()
 
 	glScalef(Escala, Escala, Escala);
 	glMultMatrixf((GLfloat *)MatrizRotacionGlobal);
+	glScalef(1, 1, FactorZ);
 	//Cursor centro
 	FuncionesOpenGL::material(0);   FuncionesOpenGL::esfera(0.002,20);
 	glTranslatef(-vecXEsfera[0],-vecXEsfera[1],-vecXEsfera[2]);
@@ -331,8 +333,9 @@ void DrawGraphics()
 		if (DBG) cout<<"DrawGraphics()260"
 				<<"\n MODO_MenuMENSAJES="<<MODO_MenuMENSAJES
 				<<endl;
-		if (MODO_MenuMENSAJES) DrawMensajes();
-		{
+		if (MODO_MenuMENSAJES)
+			DrawMensajes();
+		if(1==1) {
 			clock2F=clockF=clock ();
 			nframes++;nframes2++;
 			if (DBG) cout<<"DrawGraphics()267"<<endl;

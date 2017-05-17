@@ -105,7 +105,7 @@ void calculaFracionVolumen(vector<double> &Temp) {
 
 
 
-void Lectura_Bahia_y_CalculosGeometricosMalla() {
+void Lectura_Bahia_y_CalculosGeometricosMalla(char * fname) {
 
 
 	clock_t start_t, end_t;
@@ -115,7 +115,7 @@ void Lectura_Bahia_y_CalculosGeometricosMalla() {
 
 	cout<<"lectura de bahia-TriPrismas.msh3D..."<<endl;
 	start_t = clock();
-	gtotal->readMSH3D("bahia-TriPrismas.msh3D");
+	gtotal->readMSH3D(fname);
 
 	end_t = clock();
 	total_t = ((double)(end_t - start_t)) / CLOCKS_PER_SEC;
@@ -470,26 +470,29 @@ void Calculo_EtapaS(int inicializa)
 
 	if (Etapa==iEtapa) {
 
-		if (1==0) {
-			Lectura_Bahia_y_CalculosGeometricosMalla();
+		switch (3){
+		case 1: //Leeer archivo generado por matlab (leeento)
+			//Lectura_Bahia_y_CalculosGeometricosMalla("bahia-TriPrismas.msh3D");
+			Lectura_Bahia_y_CalculosGeometricosMalla("bahia-TriPrismas2.msh3D");
+			binario=0;
 			gtotal->write("malla_gtotal.msh");
-		}
-		else if(1==0) {
+			binario=1;
+			gtotal->write("malla_gtotal.bin");
+			break;
+		case 2: //Lee archivo ASCIII y escribe Binario
 			gtotal->read("malla_gtotal.msh");
 			//			gtotal->CentroCarasBloques();
 			binario=1;
 			gtotal->write("malla_gtotal.bin");
-		} else {
+			break;
+		case 3: //Lee el archivo binario
 			binario=1;
 			gtotal->read("malla_gtotal.bin");
 			binario=0;
 //			gtotal->write("malla_gtotal2.msh");
-
+			break;
 		}
 
-		tic(); cout<<"gtotal->CentroCarasBloques()"<<endl;
-		gtotal->CentroCarasBloques();
-		cout<<"FIN:gtotal->CentroCarasBloques() en ";toc();
 
 		tic(); cout<<"gtotal->CalculaNormalVertex()"<<endl;
 		gtotal->CalculaNormalVertex();
@@ -507,7 +510,7 @@ PAUSA;
 		  FILE * pFile;
 		  int nn,tmp;
 		   char name[100];
-		   sprintf(name,"UVW_%05d.dat",100);
+		   sprintf(name,"UVW2_%05d.dat",100);
 
 		   cout<<"532"<<endl;
 
@@ -1583,9 +1586,14 @@ void   formulario_glui()
 
 	///// Test de algunas Variables
 	tsp=glui->add_spinner("FactorNormales",GLUI_SPINNER_FLOAT, &FactorNormales);
+	tsp->set_float_limits(0,1000);
 	tsp=glui->add_spinner("FactorSuavidad",GLUI_SPINNER_FLOAT, &FactorSuavidad);
+	tsp->set_float_limits(0,1);
 	tsp=glui->add_spinner("FactorAchica",GLUI_SPINNER_FLOAT, &lambdaCara);
 	tsp->set_float_limits(0,1);
+	tsp=glui->add_spinner("FactorZ",GLUI_SPINNER_FLOAT, &FactorZ);
+	tsp->set_float_limits(0,1000);
+	tsp->set_speed(0.1);
 
 
 	glui->add_statictext( "" );
@@ -1642,7 +1650,7 @@ void   formulario_glui()
 	glui->add_button("[Z]=Hide", 'Z'+100,control_cb );
 
 
-//	gluiHelp		=glui->add_checkbox("[V] Verbose ",&MODO_MenuMENSAJES); //Eliminado en Version 1
+	gluiHelp		=glui->add_checkbox("[V] Verbose ",&MODO_MenuMENSAJES); //Eliminado en Version 1
 	glui->add_checkbox("[ ] NumH ",&MODO_NumeraH);
 //	glui->add_checkbox("[ ] NumFF ",&MODO_NumeraFF); //Eliminado en Version 1
 
