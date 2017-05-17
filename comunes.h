@@ -742,7 +742,7 @@ void CB_mouse(int button, int state, int x, int y)
 
 	//	printf("CB_mouse: button=%d, state=%d, x=%d, y=%d\n",button,state,x,y);
 	KeyControlAltShift = glutGetModifiers();
-	//	printf("glutGetModifiers=%d\n",KeyControlAltShift);	cout<<endl;
+	printf("glutGetModifiers=%d\n",KeyControlAltShift);	cout<<endl;
 
 
 	if (state==GLUT_UP) {iPush=0;}
@@ -754,6 +754,8 @@ void CB_mouse(int button, int state, int x, int y)
 			if (MODO_Rotacion2==0) iPush=1;
 			else iPush=3;
 
+			if (KeyControlAltShift==GLUT_ACTIVE_CTRL) iPush=2;
+
 
 			break;
 
@@ -763,8 +765,13 @@ void CB_mouse(int button, int state, int x, int y)
 		case GLUT_MIDDLE_BUTTON:
 
 			iPush=2;
-			if (Add_Particulas) {
 
+
+		}
+
+		if (iPush==2) {
+			if (Add_Particulas) {
+				iPush=0;
 				//Convertir coordenadas de la pantalla a OpenGL.....
 
 
@@ -794,6 +801,7 @@ void CB_mouse(int button, int state, int x, int y)
 
 			} else if (MueveCentro)
 			{
+				iPush=0;
 				//Convertir coordenadas de la pantalla a OpenGL.....
 
 
@@ -805,9 +813,9 @@ void CB_mouse(int button, int state, int x, int y)
 				GLdouble posX, posY, posZ;
 
 				/*
-				glGetDoublev( GL_MODELVIEW_MATRIX, modelview );
-				glGetDoublev( GL_PROJECTION_MATRIX, projection );
-				glGetIntegerv( GL_VIEWPORT, viewport );
+			glGetDoublev( GL_MODELVIEW_MATRIX, modelview );
+			glGetDoublev( GL_PROJECTION_MATRIX, projection );
+			glGetIntegerv( GL_VIEWPORT, viewport );
 				 */
 				FuncionesOpenGL::ObtieneMatrices();
 
@@ -831,10 +839,11 @@ void CB_mouse(int button, int state, int x, int y)
 				vecUEsfera[1]+=Escala*vecDUEsfera[1];
 				vecUEsfera[2]+=Escala*vecDUEsfera[2];
 			}
-
-
 		}
+
 	}
+
+
 
 }
 
@@ -913,7 +922,7 @@ void CB_motion(int x, int y)
 void CB_keyboardSpecial( int key, int x, int y )
 {
 	// manejo de teclas especiales
-//	printf("CB_keyboardSpecial: char=%d, x=%d, y=%d\n",key,x,y);cout<<endl;
+	printf("CB_keyboardSpecial: char=%d, x=%d, y=%d\n",key,x,y);cout<<endl;
 	switch (key) {
 	case 100:
 		rotacion(0,-1);
@@ -929,9 +938,6 @@ void CB_keyboardSpecial( int key, int x, int y )
 		break;
 
 	}
-	if (key=101) { //Flecha Up
-
-	} else
 	glutPostRedisplay();
 }
 
