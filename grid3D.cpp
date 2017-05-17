@@ -7,17 +7,17 @@
 #include <omp.h>
 
 #ifdef __APPLE__
-    #include "TargetConditionals.h"
-    #ifdef TARGET_OS_MAC
-        #include <GLUT/glut.h>
-        #include <OpenGL/OpenGL.h>
-		#include "GLUI/glui.h"
-    #endif
+#include "TargetConditionals.h"
+#ifdef TARGET_OS_MAC
+#include <GLUT/glut.h>
+#include <OpenGL/OpenGL.h>
+#include "GLUI/glui.h"
+#endif
 #elif defined _WIN32 || defined _WIN64
-	#include "GL/freeglut.h"
-	#define GLUI_FREEGLUT 1
-	//#include <GL\glut.h>
-	#include "GL/glui.h"
+#include "GL/freeglut.h"
+#define GLUI_FREEGLUT 1
+//#include <GL\glut.h>
+#include "GL/glui.h"
 #endif
 
 //#include "GL/glut.h"
@@ -56,7 +56,9 @@ extern int ModoDibujaFrontera;
 extern int Modo_DibujaCentroCaras;
 extern int Modo_DibujaCentroBloques;
 extern double Dominio_Rint,Dominio_Rmed,Dominio_Xmax,Dominio_Hsup;
-extern float lambdaCara;
+extern float FactorAchica;
+
+extern int MODO_CampoVelocidades,MODO_Origen,MODO_Pausa;
 
 
 void filtracomentario(ifstream &myfile) {
@@ -1475,18 +1477,18 @@ void grid3D::CentroCarasBloques()
 		}
 		Cara[i].centro.x=xg/Cara[i].nvCara; Cara[i].centro.y=yg/Cara[i].nvCara; Cara[i].centro.z=zg/Cara[i].nvCara;
 		Ax = (v3D[Cara[i].iv[1]].y - v3D[Cara[i].iv[0]].y) * (v3D[Cara[i].iv[2]].z - v3D[Cara[i].iv[0]].z)
-            		-(v3D[Cara[i].iv[1]].z - v3D[Cara[i].iv[0]].z) * (v3D[Cara[i].iv[2]].y - v3D[Cara[i].iv[0]].y);
+            				-(v3D[Cara[i].iv[1]].z - v3D[Cara[i].iv[0]].z) * (v3D[Cara[i].iv[2]].y - v3D[Cara[i].iv[0]].y);
 		Ay = (v3D[Cara[i].iv[1]].z - v3D[Cara[i].iv[0]].z) * (v3D[Cara[i].iv[2]].x - v3D[Cara[i].iv[0]].x)
-					-(v3D[Cara[i].iv[1]].x - v3D[Cara[i].iv[0]].x) * (v3D[Cara[i].iv[2]].z - v3D[Cara[i].iv[0]].z);
+							-(v3D[Cara[i].iv[1]].x - v3D[Cara[i].iv[0]].x) * (v3D[Cara[i].iv[2]].z - v3D[Cara[i].iv[0]].z);
 		Az = (v3D[Cara[i].iv[1]].x - v3D[Cara[i].iv[0]].x) * (v3D[Cara[i].iv[2]].y - v3D[Cara[i].iv[0]].y)
-					-(v3D[Cara[i].iv[1]].y - v3D[Cara[i].iv[0]].y) * (v3D[Cara[i].iv[2]].x - v3D[Cara[i].iv[0]].x);
+							-(v3D[Cara[i].iv[1]].y - v3D[Cara[i].iv[0]].y) * (v3D[Cara[i].iv[2]].x - v3D[Cara[i].iv[0]].x);
 		if (Cara[i].nvCara>3) {
 			Ax+= (v3D[Cara[i].iv[2]].y - v3D[Cara[i].iv[0]].y) * (v3D[Cara[i].iv[3]].z - v3D[Cara[i].iv[0]].z)
-							-(v3D[Cara[i].iv[2]].z - v3D[Cara[i].iv[0]].z) * (v3D[Cara[i].iv[3]].y - v3D[Cara[i].iv[0]].y);
+									-(v3D[Cara[i].iv[2]].z - v3D[Cara[i].iv[0]].z) * (v3D[Cara[i].iv[3]].y - v3D[Cara[i].iv[0]].y);
 			Ay+= (v3D[Cara[i].iv[2]].z - v3D[Cara[i].iv[0]].z) * (v3D[Cara[i].iv[3]].x - v3D[Cara[i].iv[0]].x)
-							-(v3D[Cara[i].iv[2]].x - v3D[Cara[i].iv[0]].x) * (v3D[Cara[i].iv[3]].z - v3D[Cara[i].iv[0]].z);
+									-(v3D[Cara[i].iv[2]].x - v3D[Cara[i].iv[0]].x) * (v3D[Cara[i].iv[3]].z - v3D[Cara[i].iv[0]].z);
 			Az+= (v3D[Cara[i].iv[2]].x - v3D[Cara[i].iv[0]].x) * (v3D[Cara[i].iv[3]].y - v3D[Cara[i].iv[0]].y)
-							-(v3D[Cara[i].iv[2]].y - v3D[Cara[i].iv[0]].y) * (v3D[Cara[i].iv[3]].x - v3D[Cara[i].iv[0]].x);
+									-(v3D[Cara[i].iv[2]].y - v3D[Cara[i].iv[0]].y) * (v3D[Cara[i].iv[3]].x - v3D[Cara[i].iv[0]].x);
 		}
 		Cara[i].normalCara.x=Ax;
 		Cara[i].normalCara.y=Ay;
@@ -1984,6 +1986,7 @@ int nParticulas=200;
 double ThetaMax,ThetaMin,dTheta_med;
 static vector<double> Particulas[maxpasadas+1][3];
 static vector<float> ParticulasZ;
+static vector<int> ParticulasBloq;
 int primerdrawVelGL=1;
 
 
@@ -1999,55 +2002,50 @@ void grid3D::PosINI3(double PosX,double PosY,double PosZ)
 	float rho,theta;
 
 	ParticulasZ.resize(nParticulas+nz*nr);
+	ParticulasBloq.resize(nParticulas+nz*nr);
 	for (k=0;k<=maxpasadas;k++) {
 		for (j=0;j<3;j++) {
 			Particulas[k][j].resize(nParticulas+nz*nr);
 		}
 	}
-	Hz=-PosZ;
-	float DZ=Hz*.49;
-	PosZ+=DZ*.01;
-	jj=0;
-	for (iz=0;iz<nz;iz++) {
-		for (ir=0;ir<nr;ir++) {
-			//TODO
-			rho=(   (double)rand() / ((double)(RAND_MAX)+(double)(1)) )*0.05;
-			theta=(   (double)rand() / ((double)(RAND_MAX)+(double)(1)) )*atan(1)*8;
+	for (ir=0;ir<nr;ir++) {
+		//TODO
+		int pj,pk,pjmin;
+		float pd2min,pd2,px,py,pz,pdx,pdy,pdz;
 
+		rho=(   (double)rand() / ((double)(RAND_MAX)+(double)(1)) )*0.05;
+		theta=(   (double)rand() / ((double)(RAND_MAX)+(double)(1)) )*atan(1)*8;
+
+
+		px= PosX+rho*cos(theta);
+		py= PosY+rho*sin(theta);
+		pz= PosZ;
+
+		pd2min=1e10;
+		for (pj=0;pj<nTriPrisma3D;pj++) {
+			pd2=sqr(px-TriPrisma3D[pj].centro.x)+sqr(py-TriPrisma3D[pj].centro.y)+sqr(pz-TriPrisma3D[pj].centro.z);
+			if (pd2<pd2min) {
+				pd2min=pd2;
+				pjmin=pj;
+			}
+		}
+		pjmin=pjmin/3*3;  // TriPrisma del fondo
+
+		for (iz=0;iz<nz;iz++) {
 			i=nParticulas++;
 
-			int pj,pk,pjmin;
-			float pd2min,pd2,px,py,pz,pdx,pdy,pdz;
-
-			px= PosX+rho*cos(theta);
-			py= PosY+rho*sin(theta);
-			pz= PosZ+DZ*(iz);
-
-						pd2min=1e10;
-			for (pj=0;pj<nTriPrisma3D;pj++) {
-				pd2=sqr(px-TriPrisma3D[pj].centro.x)+sqr(py-TriPrisma3D[pj].centro.y)+sqr(pz-TriPrisma3D[pj].centro.z);
-				if (pd2<pd2min) {
-					pd2min=pd2;
-					pjmin=pj;
-				}
-			}
-
-			Particulas[0][0][i]= px;
-			Particulas[0][1][i]= py;
+			Particulas[0][0][i]= TriPrisma3D[pjmin].centro.x;
+			Particulas[0][1][i]= TriPrisma3D[pjmin].centro.y;
 			Particulas[0][2][i]= TriPrisma3D[pjmin].centro.z;
-			Hz=-v3D[TriPrisma3D[pjmin/3*3].iv[0]].z;
-
-//			ParticulasZ[i]= 1+Particulas[0][2][i]/Hz;
 			ParticulasZ[i]= 0.5*iz;
+			ParticulasBloq[i]=pjmin;
 
-//			cout<<"pjmin="<<pjmin<<" Hz="<<Hz<<" pjmin/3*3="<<pjmin/3*3<<TriPrisma3D[pjmin].centro.z
-//					<<" ParticulasZ[i]="<<ParticulasZ[i]<<endl;
+			pjmin++;
 
 			for (j=0;j<3;j++) {
 				for (k=0;k<maxpasadas;k++) Particulas[k+1][j][i]=Particulas[0][j][i];
 			}
 		}
-		jj++;
 	}
 
 	Spinner_particulas->sync_live(1,1);
@@ -2069,14 +2067,15 @@ void grid3D::PosINI(int i)
 		deltade3=0;
 	}
 	j=++jprevio;
-//	cout <<"i="<<i<<" j="<<j<<" nTriPrisma3D="<<nTriPrisma3D<<endl;
+	//	cout <<"i="<<i<<" j="<<j<<" nTriPrisma3D="<<nTriPrisma3D<<endl;
 	Particulas[0][0][i]= TriPrisma3D[j].centro.x;
 	Particulas[0][1][i]= TriPrisma3D[j].centro.y;
 	Particulas[0][2][i]= TriPrisma3D[j].centro.z;
 	ParticulasZ[i]= 0.5*deltade3;
+	ParticulasBloq[i]=j;
 
-//	cout<<"j="<<j<<" Hz="<<Hz<<TriPrisma3D[j].centro.z
-//			<<" ParticulasZ[i]="<<ParticulasZ[i]<<endl;
+	//	cout<<"j="<<j<<" Hz="<<Hz<<TriPrisma3D[j].centro.z
+	//			<<" ParticulasZ[i]="<<ParticulasZ[i]<<endl;
 
 
 
@@ -2172,6 +2171,7 @@ void grid3D::drawVelGL_TriPrisma(vector<double> U,vector<double> V,vector<double
 	if (primerdrawVelGL) {
 		int oldsize=Particulas[0][0].size();
 		ParticulasZ.resize(nParticulas);
+		ParticulasBloq.resize(nParticulas);
 		for (k=0;k<=maxpasadas;k++) {
 			for (j=0;j<3;j++) {
 				Particulas[k][j].resize(nParticulas);
@@ -2184,61 +2184,80 @@ void grid3D::drawVelGL_TriPrisma(vector<double> U,vector<double> V,vector<double
 
 	primerdrawVelGL=0;
 	ipasadas++;
-
+	if (!MODO_Pausa) {
 #pragma omp parallel for num_threads(7)
-	for (i=0;i<nParticulas;i++) {
-		int pj,pk,pjmin;
-		float pd2min,pd2,px,py,pz,pdx,pdy,pdz;
-		px=Particulas[0][0][i];
-		py=Particulas[0][1][i];
-		pz=Particulas[0][2][i];
-		pd2min=1e10;
-		for (pj=0;pj<nTriPrisma3D;pj++) {
-			pd2=sqr(px-TriPrisma3D[pj].centro.x)+sqr(py-TriPrisma3D[pj].centro.y)+sqr(pz-TriPrisma3D[pj].centro.z);
-			if (pd2<pd2min) {
-				pd2min=pd2;
-				pjmin=pj;
-			}
-		}
-
-
-		if ( pd2min>0.01 ) {
-			PosINI(i);
-		}
-		else {
-			//cout<<"factorV="<<factorV<<endl;
-			double UUU=sqrt(sqr(U[pjmin])+sqr(V[pjmin])+sqr(W[pjmin]));
-			pdx=U[pjmin]*dt/npasadas*factorV/UUU*factorVh;
-			pdy=V[pjmin]*dt/npasadas*factorV/UUU*factorVh;
-			pdz=W[pjmin]*dt/npasadas*factorV/UUU*factorVh*100/6.0;
-			if (i==-1) {
-				cout << "i="<<i<<"  UUU="<<UUU<<" pdx="<<pdx<<" dt="<<dt<<" npasadas="<<npasadas
-						<<" factorV="<<factorV<<" factorVh"<<factorVh<<endl;
+		for (i=0;i<nParticulas;i++) {
+			int pj,pk,pjmin;
+			float pd2min,pd2,px,py,pz,pdx,pdy,pdz;
+			px=Particulas[0][0][i];
+			py=Particulas[0][1][i];
+			pz=Particulas[0][2][i];
+			pd2min=1e10;
+			for (pj=0;pj<nTriPrisma3D;pj++) {
+				pd2=sqr(px-TriPrisma3D[pj].centro.x)+sqr(py-TriPrisma3D[pj].centro.y)+sqr(pz-TriPrisma3D[pj].centro.z);
+				if (pd2<pd2min) {
+					pd2min=pd2;
+					pjmin=pj;
+				}
 			}
 
-			if (ipasadas>npasadas) {
-				for (pk=maxpasadas-1;pk>=0;pk--)
-					for (pj=0;pj<3;pj++)
-						Particulas[pk+1][pj][i]=Particulas[pk][pj][i];
+			ParticulasBloq[i]=pjmin;
+			if ( pd2min>0.01 ) {
+				PosINI(i);
 			}
+			else {
+				//cout<<"factorV="<<factorV<<endl;
+				double UUU=sqrt(sqr(U[pjmin])+sqr(V[pjmin])+sqr(W[pjmin]));
+				pdx=U[pjmin]*dt/npasadas*factorV/UUU*factorVh;
+				pdy=V[pjmin]*dt/npasadas*factorV/UUU*factorVh;
+				pdz=W[pjmin]*dt/npasadas*factorV/UUU*factorVh*100/6.0;
+				if (i==-1) {
+					cout << "i="<<i<<"  UUU="<<UUU<<" pdx="<<pdx<<" dt="<<dt<<" npasadas="<<npasadas
+							<<" factorV="<<factorV<<" factorVh"<<factorVh<<endl;
+				}
 
-			px=Particulas[0][0][i]+=pdx;
-			py=Particulas[0][1][i]+=pdy;
-			pz=Particulas[0][2][i]+=pdz;
+				if (ipasadas>npasadas) {
+					for (pk=maxpasadas-1;pk>=0;pk--)
+						for (pj=0;pj<3;pj++)
+							Particulas[pk+1][pj][i]=Particulas[pk][pj][i];
+				}
+
+				px=Particulas[0][0][i]+=pdx;
+				py=Particulas[0][1][i]+=pdy;
+				pz=Particulas[0][2][i]+=pdz;
+			}
 		}
 	}
 
 	for (i=0;i<nParticulas;i++) {
-		FuncionesOpenGL::ColorF3(ParticulasZ[i]);
+		//glEnable ( GL_COLOR_MATERIAL );
+		//glClear(GL_COLOR_BUFFER_BIT);
+
+		//glDisable(GL_DEPTH_TEST);
+		glEnable ( GL_COLOR_MATERIAL );
+		FuncionesOpenGL::ColorF3(ParticulasZ[i],1);
 		for (k=0;k<maxpasadas;k++) {
 			glBegin(GL_LINES);
+			//	glColor3f(1.0f,0.0,0.0);
 			glVertex3d(Particulas[k][0][i],Particulas[k][1][i], Particulas[k][2][i]);
 			glVertex3d(Particulas[k+1][0][i],Particulas[k+1][1][i], Particulas[k+1][2][i]);
 			glEnd();
 		}
+		if (MODO_Origen) {
+			glBegin(GL_LINES);
+			glVertex3d(Particulas[0][0][i],Particulas[0][1][i], Particulas[0][2][i]);
+			R3 centro=TriPrisma3D[ParticulasBloq[i]].centro;
+			glVertex3d(centro.x,centro.y,centro.z);
+			glEnd();
+		}
+
+
+		glDisable ( GL_COLOR_MATERIAL );
+		//glEnable(GL_DEPTH_TEST);
+		FuncionesOpenGL::ColorF3(ParticulasZ[i],0);
 		glPushMatrix();
 		glTranslated(Particulas[0][0][i],Particulas[0][1][i], Particulas[0][2][i]);
-//		FuncionesOpenGL::material(100);
+		//		FuncionesOpenGL::material(100);
 		FuncionesOpenGL::esfera(0.003*Dominio_Xmax,3);
 		glPopMatrix();
 	}
@@ -2487,9 +2506,9 @@ void Cara3D::draw_caraGL() {
 	zg= centro.z;
 
 	for (li=0;li<nvCara;li++) {
-		x[li]+=(xg-x[li])*lambdaCara;
-		y[li]+=(yg-y[li])*lambdaCara;
-		z[li]+=(zg-z[li])*lambdaCara;
+		x[li]+=(xg-x[li])*FactorAchica;
+		y[li]+=(yg-y[li])*FactorAchica;
+		z[li]+=(zg-z[li])*FactorAchica;
 	}
 
 #if 1==0

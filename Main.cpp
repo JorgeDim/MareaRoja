@@ -493,6 +493,14 @@ void Calculo_EtapaS(int inicializa)
 			break;
 		}
 
+//TODO
+		//gtotal->xmax
+		gtotal->minmax();
+		vecXEsfera[0]=(gtotal->xmax+gtotal->xmin)/2;
+		vecXEsfera[1]=(gtotal->ymax+gtotal->ymin)/2;
+		vecXEsfera[2]=(gtotal->zmax+gtotal->zmin)/2;
+
+//		cout<<"E vecUEsfera="<<vecUEsfera[0]<<","<<vecUEsfera[1]<<"."<<vecUEsfera[2]<<","<<vecUEsfera[3]<<endl;
 
 		tic(); cout<<"gtotal->CalculaNormalVertex()"<<endl;
 		gtotal->CalculaNormalVertex();
@@ -540,6 +548,12 @@ PAUSA;
 		   }
 		   fclose(pFile);
 
+			if (glui != NULL) {
+				PanelFlimite->enable();
+				Checkbox_particulas->enable();
+				PanelParticulas->enable();
+			}
+			Etapa--;
 PAUSA;
 
 		EtapaGlobal=ETAPA_CALCULO_T_ARRIBA;EtapaGlobal2Local=Etapa;
@@ -547,11 +561,6 @@ PAUSA;
 #if DBGMain
 		cout<<"Etapa="<<Etapa<<"IniciEtapa="<<InicioEtapa <<"EtapaGlobal2Local="<<EtapaGlobal2Local<<endl;
 #endif
-		if (glui != NULL) {
-			PanelFlimite->enable();
-			Checkbox_particulas->enable();
-			PanelParticulas->enable();
-		}
 		cout<<"------------------------------------------------------"<<endl;
 		cout<<"Calculo Escurrimiento y Temperaturas  (con err0="<<err0<<")"<<endl;
 		myfileSalida<<"------------------------------------------------------"<<endl;
@@ -1589,7 +1598,7 @@ void   formulario_glui()
 	tsp->set_float_limits(0,1000);
 	tsp=glui->add_spinner("FactorSuavidad",GLUI_SPINNER_FLOAT, &FactorSuavidad);
 	tsp->set_float_limits(0,1);
-	tsp=glui->add_spinner("FactorAchica",GLUI_SPINNER_FLOAT, &lambdaCara);
+	tsp=glui->add_spinner("FactorAchica",GLUI_SPINNER_FLOAT, &FactorAchica);
 	tsp->set_float_limits(0,1);
 	tsp=glui->add_spinner("FactorZ",GLUI_SPINNER_FLOAT, &FactorZ);
 	tsp->set_float_limits(0,1000);
@@ -1603,6 +1612,9 @@ void   formulario_glui()
 
 	PanelParticulas = glui->add_panel("",GLUI_PANEL_EMBOSSED);
 	Checkbox_particulas=glui->add_checkbox_to_panel(PanelParticulas,"Particulas ?",&MODO_CampoVelocidades, 1101 ,control_cb );
+	glui->add_checkbox_to_panel(PanelParticulas,"Origen",&MODO_Origen);
+	glui->add_checkbox_to_panel(PanelParticulas,"Pausa",&MODO_Pausa);
+
 
 	Spinner_particulas =tsp=glui->add_spinner_to_panel(PanelParticulas,"N Particulas",GLUI_SPINNER_INT, &nParticulas,2223,control_cb);
 

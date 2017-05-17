@@ -216,7 +216,7 @@ void FuncionesOpenGL::ColorF2(double minF,double maxF,double lF)
 	}
 }
 
-void FuncionesOpenGL::ColorF3(float t)
+void FuncionesOpenGL::ColorF3(float t,int code)
 {
 
 	GLfloat mat_ambient[3] ;
@@ -225,7 +225,7 @@ void FuncionesOpenGL::ColorF3(float t)
 	GLfloat r,g,b;
 	if (t>0.5) {
 		r=1-1.4*(1-t);
-		g=0*t*(1-t);
+		g=.5-1.0*(1-t);
 		b=.5*(1-t);
 	} else {
 		r=1-1.4*(1-t)+0.4*(1-2*t);
@@ -233,8 +233,8 @@ void FuncionesOpenGL::ColorF3(float t)
 		b=.5*(1-t);
 	}
 	//r=sqrt(r);g=sqrt(g);b=sqrt(b);
-	if (0) {
-		glColor3d(r,g,b);
+	if (code==1) {
+		glColor3f(r,g,b);
 	} else {
 		mat_ambient[0]=r/3 ;
 		mat_ambient[1]=g/3 ;

@@ -10,6 +10,8 @@
 
 extern double ThetaMax;
 
+void DrawMensajesRight();
+
 void SaveOrRead(char *ifile_name,int iSaveReadMode);
 
 void control_cb( int control );
@@ -21,6 +23,20 @@ void AddMensaje(char* newMensaje)
 		strcpy(Mensaje[i],Mensaje[i+1]);
 	}
 	strcpy(Mensaje[NMensajes-1],newMensaje);
+}
+
+void AddMensajeRight(char* newMensaje)
+{
+//	cout<<"M AddMensajeRight(char* "<<newMensaje<<")"<<endl;
+	int i;
+	if (NMensajeRight==MaxMensajeRight)
+		for (i=0;i<NMensajeRight-1;i++) {
+			strcpy(MensajeRight[i],MensajeRight[i+1]);
+		}
+	else
+		NMensajeRight++;
+//	cout<<"M NMensajeRight="<<NMensajeRight<<endl;
+	strcpy(MensajeRight[NMensajeRight-1],newMensaje);
 }
 
 
@@ -56,7 +72,8 @@ void MyDBG() {
 
 void print_text(int x, int y, char* s) 
 {
-	//cout<<"print_text(int "<<x<<", int "<<y<<", char* "<<s<<") "<<endl;
+
+//	cout<<"M print_text(int "<<x<<", int "<<y<<", char* "<<s<<") "<<endl;
 	int lines;
 	char* p;
 	glDisable(GL_DEPTH_TEST);
@@ -335,6 +352,7 @@ void DrawGraphics()
 				<<endl;
 		if (MODO_MenuMENSAJES)
 			DrawMensajes();
+		DrawMensajesRight();
 		if(1==1) {
 			clock2F=clockF=clock ();
 			nframes++;nframes2++;
@@ -479,6 +497,24 @@ void DrawMensajesDatosGui3()
 }
 
 
+void DrawMensajesRight()
+{
+
+//	cout<<"M DrawMensajesRight"<<endl;
+	int i;
+	glPushAttrib( GL_LIGHTING_BIT );
+
+	glDisable( GL_LIGHTING );
+
+
+	glColor3d(.5,1, 0.1);
+
+
+	for (i=0;i<NMensajeRight;i++){
+		print_text(width-640,height-17*(i+1),MensajeRight[i]);
+	}
+}
+
 void DrawMensajes()
 {
 	int i;
@@ -573,6 +609,11 @@ void inicializacion()
 	for (i=0;i<NMensajes;i++) {
 		Mensaje[i]=(char *)(new char[100]);
 		strcpy(Mensaje[i],"");
+	}
+
+	for (i=0;i<MaxMensajeRight;i++) {
+		MensajeRight[i]=(char *)(new char[100]);
+		strcpy(MensajeRight[i],"");
 	}
 
 	clock2=clock0=clock ();
@@ -745,7 +786,7 @@ void CB_mouse(int button, int state, int x, int y)
 
 	//	printf("CB_mouse: button=%d, state=%d, x=%d, y=%d\n",button,state,x,y);
 	KeyControlAltShift = glutGetModifiers();
-	printf("glutGetModifiers=%d",KeyControlAltShift);	cout<<endl;
+	//printf("glutGetModifiers=%d",KeyControlAltShift);	cout<<endl;
 
 
 	if (state==GLUT_UP) {iPush=0;}
@@ -849,7 +890,7 @@ void CB_mouse(int button, int state, int x, int y)
 
 	}
 
-	cout<<"CB_mouse()END: iPush="<<iPush<<endl;
+	//cout<<"CB_mouse()END: iPush="<<iPush<<endl;
 
 }
 
@@ -868,7 +909,7 @@ void CB_motion(int x, int y)
 
 	int lMODO_de_mover=MODO_de_mover;
 
-	cout<<"iPush="<<iPush<<" lMODO_de_mover="<<lMODO_de_mover<<" KeyControlAltShift="<<KeyControlAltShift<<endl;
+	//cout<<"iPush="<<iPush<<" lMODO_de_mover="<<lMODO_de_mover<<" KeyControlAltShift="<<KeyControlAltShift<<endl;
 
 	if (KeyControlAltShift==GLUT_ACTIVE_CTRL)
 		lMODO_de_mover=0;
@@ -1815,8 +1856,8 @@ void CB_keyboard(unsigned char key, int x, int y)
 {
 
 	double gLeft=-.1,gRight=.1, gBottom=-.1, gTop=.1, gNear=0, gFar=1000000;
-	cout<<"CB_keyboard()"<<endl;
-	printf("CB_keyboard: char=%d(%c), x=%d, y=%d",key,key,x,y);	cout<<endl;
+	//cout<<"CB_keyboard()"<<endl;
+	//printf("CB_keyboard: char=%d(%c), x=%d, y=%d",key,key,x,y);	cout<<endl;
 
 	switch(key) {
 	case 27: /* ESC */
@@ -1918,13 +1959,28 @@ void CB_keyboard(unsigned char key, int x, int y)
 		break;
 	case 'M':
 	case 'm':
+		//TODO
 		gluiMueve->set_int_val(!MueveCentro);MueveCentro=gluiMueve->get_int_val();
-		if (MueveCentro)    AddMensaje((char *)"M=Mueve Centro");
-		else                AddMensaje("..end: Mueve centro");
+		if (MueveCentro)    {
+			AddMensajeRight((char *)"M=Mueve Centro");
+			cout<<"E vecUEsfera="<<vecUEsfera[0]<<","<<vecUEsfera[1]<<"."<<vecUEsfera[2]<<","<<vecUEsfera[3]<<endl;
+
+			Add_Particulas=0;
+		}
+		else  {
+			AddMensajeRight("");AddMensajeRight("");
+		}
 		break;
 	case 'A': //Add particulas con el mouse
 	case 'a':
 		Add_Particulas=1-Add_Particulas;
+		if (Add_Particulas) {
+			AddMensajeRight((char *)"A=Add Particulas");
+			MueveCentro=0;
+
+		} else {
+			AddMensajeRight("");AddMensajeRight("");
+		}
 		break;
 	case 'P':
 	case 'p':

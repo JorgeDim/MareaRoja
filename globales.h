@@ -38,7 +38,7 @@ int NDivZ=2,nRLC=-1,nThLC=-1;
 int refinoR=0;
 char FDatos[100],mensajes0[10000];
 double FactorCercania=0.90;
-float lambdaCara=0.0,FactorZ=1.0;
+float FactorAchica=0.0,FactorZ=1.0;
 
 
 
@@ -48,7 +48,7 @@ float Ax=0,By=0,Cz=10,DD=0.0;
 float TLimite=40;
 int TLimite_if=1;
 
-float FactorNormales=3051,FactorSuavidad=0;
+float FactorNormales=0,FactorSuavidad=1;
 
 
 clock_t start_t, end_t;
@@ -141,11 +141,11 @@ int NumON=0,ColorON=0,ClippingON=1,DefClippingON=0,MODO_Rotacion2=0,MODO_MenuMEN
 int MODO_de_mover=1;
 int ModoGame=0,MODO_Traslacion=0,MODO_Rotacion=1;
 int MODO_Ejes=false;
-int MODO_CampoVelocidades=false;
+int MODO_CampoVelocidades=false,MODO_Origen=false,MODO_Pausa=false;
 int MODO_CampoVelocidades2=false;
 int Modo_DibujaEdges=false;
 int ModoDibujaNormales=false;
-int ModoDibujaInterior=true;
+int ModoDibujaInterior=false;
 int ModoDibujaFrontera=true;
 int ModoDibujaAlgunos=false;
 vector<int> CualesCarasDibuja;
@@ -174,6 +174,8 @@ int width=1024,height=968;
 GLfloat aspect;
 int NMensajes=35;
 char *Mensaje[35];
+int NMensajeRight=0,MaxMensajeRight=2;
+char *MensajeRight[2];
 
 GLuint baseF,baseBIT; 
 int mode=0;
