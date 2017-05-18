@@ -225,6 +225,7 @@ void FuncionesOpenGL::ColorF3(float t,int code)
 	GLfloat mat_diffuse[3] ;
 	GLfloat mat_specular[3];
 	GLfloat r,g,b;
+#if 0
 	if (t>0.5) {
 		r=1-1.4*(1-t);
 		g=.5-1.0*(1-t);
@@ -233,6 +234,14 @@ void FuncionesOpenGL::ColorF3(float t,int code)
 		r=1-1.4*(1-t)+0.4*(1-2*t);
 		g=0*t*(1-t);
 		b=.5*(1-t);
+	}
+#endif
+	r=0;g=1;b=0;
+	if (t<0.7) {
+		r=1;g=0;b=0;
+	}
+	if (t<0.3) {
+		r=0;g=0;b=1;
 	}
 	//r=sqrt(r);g=sqrt(g);b=sqrt(b);
 	if (code==1) {

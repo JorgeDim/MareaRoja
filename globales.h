@@ -38,7 +38,7 @@ int NDivZ=2,nRLC=-1,nThLC=-1;
 int refinoR=0;
 char FDatos[100],mensajes0[10000];
 double FactorCercania=0.90;
-float FactorAchica=0.0,FactorZ=1.0;
+float FactorAchica=0.05,FactorZ=1.0;
 
 float FactorAmbient=1,FactorDifusse=1,FactorSpecular=1,FactorEmission=1;
 

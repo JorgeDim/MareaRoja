@@ -469,10 +469,11 @@ void Calculo_EtapaS(int inicializa)
 	inicio=0;
 	llamar_etapa_Siguiente_PAUSA2=0;
 
+	caso=2;
+	int step=1000;
 
 	if (Etapa==iEtapa) {
 
-		caso=3;
 		char fn[100],fnmsh[100],fnbin[100];
 		sprintf(fn,"bahia-TriPrismas%d.msh3D",caso);
 		sprintf(fnmsh,"malla_gtotal%d.msh",caso);
@@ -527,7 +528,7 @@ PAUSA;
 		  FILE * pFile;
 		  int nn,tmp;
 		   char name[100];
-		   sprintf(name,"UVW%d_%05d.dat",caso,100);
+		   sprintf(name,"UVW%d_%05d.dat",caso,step);
 
 		   cout<<"532"<<endl;
 

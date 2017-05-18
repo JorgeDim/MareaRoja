@@ -2239,11 +2239,28 @@ void grid3D::drawVelGL_TriPrisma(vector<double> U,vector<double> V,vector<double
 		for (k=0;k<maxpasadas;k++) {
 			glBegin(GL_LINES);
 			//	glColor3f(1.0f,0.0,0.0);
-			glVertex3d(Particulas[k][0][i],Particulas[k][1][i], Particulas[k][2][i]);
-			glVertex3d(Particulas[k+1][0][i],Particulas[k+1][1][i], Particulas[k+1][2][i]);
+			float x1,x2,y1,y2,z1,z2,xm,ym,zm;
+			x1=Particulas[k][0][i];
+			y1=Particulas[k][1][i];
+			z1=Particulas[k][2][i];
+			x2=Particulas[k+1][0][i];
+			y2=Particulas[k+1][1][i];
+			z2=Particulas[k+1][2][i];
+			xm=(x1+x2)/2;
+			ym=(y1+y2)/2;
+			zm=(z1+z2)/2;
+			x1=x1+0.3*(xm-x1);
+			y1=y1+0.3*(ym-y1);
+			z1=z1+0.3*(zm-z1);
+
+			glVertex3d(x1,y1,z1);
+			glVertex3d(x2,y2,z2);
 			glEnd();
 		}
 		if (MODO_Origen) {
+			int iz =ParticulasBloq[i];
+			iz=iz-iz/3*3;
+			FuncionesOpenGL::ColorF3(0.5*iz,1);
 			glBegin(GL_LINES);
 			glVertex3d(Particulas[0][0][i],Particulas[0][1][i], Particulas[0][2][i]);
 			R3 centro=TriPrisma3D[ParticulasBloq[i]].centro;
@@ -2652,7 +2669,7 @@ void grid3D::drawGL()
 			}
 			for (i=0;i<nTriPrisma3D;i++) {
 				glTranslatef(TriPrisma3D[i].centro.x,TriPrisma3D[i].centro.y,TriPrisma3D[i].centro.z);
-				FuncionesOpenGL::material(1);   FuncionesOpenGL::esfera(0.01/Escala,3);
+				FuncionesOpenGL::material(1);   FuncionesOpenGL::esfera(0.001,3);
 				glTranslatef(-TriPrisma3D[i].centro.x,-TriPrisma3D[i].centro.y,-TriPrisma3D[i].centro.z);
 			}
 		}
