@@ -66,6 +66,8 @@ string  GetFileName( const string & prompt ) {
 }
 #endif
 
+void TesteDeVariablesGlobales() ;
+
 void calculaFracionVolumen(vector<double> &Temp) {
 	int i;
 //	cout<<"calculaFracionVolumen()"<<endl;
@@ -470,24 +472,31 @@ void Calculo_EtapaS(int inicializa)
 
 	if (Etapa==iEtapa) {
 
+		caso=3;
+		char fn[100],fnmsh[100],fnbin[100];
+		sprintf(fn,"bahia-TriPrismas%d.msh3D",caso);
+		sprintf(fnmsh,"malla_gtotal%d.msh",caso);
+		sprintf(fnbin,"malla_gtotal%d.bin",caso);
 		switch (3){
 		case 1: //Leeer archivo generado por matlab (leeento)
 			//Lectura_Bahia_y_CalculosGeometricosMalla("bahia-TriPrismas.msh3D");
-			Lectura_Bahia_y_CalculosGeometricosMalla("bahia-TriPrismas2.msh3D");
+			//Lectura_Bahia_y_CalculosGeometricosMalla("bahia-TriPrismas2.msh3D");
+			Lectura_Bahia_y_CalculosGeometricosMalla(fn);
 			binario=0;
-			gtotal->write("malla_gtotal.msh");
+
+			gtotal->write(fnmsh);
 			binario=1;
-			gtotal->write("malla_gtotal.bin");
+			gtotal->write(fnbin);
 			break;
 		case 2: //Lee archivo ASCIII y escribe Binario
-			gtotal->read("malla_gtotal.msh");
+			gtotal->read(fnmsh);
 			//			gtotal->CentroCarasBloques();
 			binario=1;
-			gtotal->write("malla_gtotal.bin");
+			gtotal->write(fnbin);
 			break;
 		case 3: //Lee el archivo binario
 			binario=1;
-			gtotal->read("malla_gtotal.bin");
+			gtotal->read(fnbin);
 			binario=0;
 //			gtotal->write("malla_gtotal2.msh");
 			break;
@@ -518,7 +527,7 @@ PAUSA;
 		  FILE * pFile;
 		  int nn,tmp;
 		   char name[100];
-		   sprintf(name,"UVW2_%05d.dat",100);
+		   sprintf(name,"UVW%d_%05d.dat",caso,100);
 
 		   cout<<"532"<<endl;
 
@@ -526,7 +535,7 @@ PAUSA;
 
 		   fscanf(pFile,"%d\n",&nn);
 		   if (nn != gtotal->nTriPrisma3D) {
-				cout<<"nn != gtotal->nTriPrisma3D"<<nn<<" "<<gtotal->nTriPrisma3D<<endl;
+				cout<<"nn != gtotal->nTriPrisma3D: "<<nn<<" != "<<gtotal->nTriPrisma3D<<endl;
 
 			   exit(1);
 		   }
@@ -1595,16 +1604,7 @@ void   formulario_glui()
 
 	glui->add_statictext( "" );
 
-	///// Test de algunas Variables
-	tsp=glui->add_spinner("FactorNormales",GLUI_SPINNER_FLOAT, &FactorNormales);
-	tsp->set_float_limits(0,1000);
-	tsp=glui->add_spinner("FactorSuavidad",GLUI_SPINNER_FLOAT, &FactorSuavidad);
-	tsp->set_float_limits(0,1);
-	tsp=glui->add_spinner("FactorAchica",GLUI_SPINNER_FLOAT, &FactorAchica);
-	tsp->set_float_limits(0,1);
-	tsp=glui->add_spinner("FactorZ",GLUI_SPINNER_FLOAT, &FactorZ);
-	tsp->set_float_limits(0,1000);
-	tsp->set_speed(0.1);
+	TesteDeVariablesGlobales();
 
 
 	glui->add_statictext( "" );
@@ -1748,10 +1748,48 @@ void   formulario_glui()
 	PanelParticulas->disable();
 	cout<<"formulario_glui()end"<<endl;
 }
+
+
+void TesteDeVariablesGlobales() {
+
+	GLUI_Spinner *tsp;
+	///// Test de algunas Variables
+	tsp=glui->add_spinner("FactorNormales",GLUI_SPINNER_FLOAT, &FactorNormales);
+	tsp->set_float_limits(0,1000);
+	tsp=glui->add_spinner("FactorSuavidad",GLUI_SPINNER_FLOAT, &FactorSuavidad);
+	tsp->set_float_limits(0,1);
+	tsp=glui->add_spinner("FactorAchica",GLUI_SPINNER_FLOAT, &FactorAchica);
+	tsp->set_float_limits(0,1);
+	tsp=glui->add_spinner("FactorZ",GLUI_SPINNER_FLOAT, &FactorZ);
+	tsp->set_float_limits(0,1000);
+	tsp->set_speed(0.1);
+
+
+	tsp=glui->add_spinner("Ambient",GLUI_SPINNER_FLOAT, &FactorAmbient);
+	tsp->set_float_limits(0,3);
+	tsp->set_speed(0.1);
+
+	tsp=glui->add_spinner("Difusse",GLUI_SPINNER_FLOAT, &FactorDifusse);
+	tsp->set_float_limits(0,3);
+	tsp->set_speed(0.1);
+
+	tsp=glui->add_spinner("Specular",GLUI_SPINNER_FLOAT, &FactorSpecular);
+	tsp->set_float_limits(0,3);
+	tsp->set_speed(0.1);
+
+	tsp=glui->add_spinner("Emission",GLUI_SPINNER_FLOAT, &FactorEmission);
+	tsp->set_float_limits(0,3);
+	tsp->set_speed(0.1);
+
+
+
+
+
+
+}
+
 #endif
 
-/// <a href="#AQUI"> ir </a>
-///
 
 
 

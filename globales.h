@@ -40,6 +40,11 @@ char FDatos[100],mensajes0[10000];
 double FactorCercania=0.90;
 float FactorAchica=0.0,FactorZ=1.0;
 
+float FactorAmbient=1,FactorDifusse=1,FactorSpecular=1,FactorEmission=1;
+
+
+
+
 
 
 //Plano del clipping
@@ -154,6 +159,7 @@ int Modo_DibujaCentroCaras=false;
 int Modo_DibujaCentroBloques=false;
 int MODO_NumeraH=false;
 int MODO_NumeraFF=false;
+int caso=3;
 
 int binario=0;
 

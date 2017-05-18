@@ -11,6 +11,8 @@
  GLint    FuncionesOpenGL::viewport[4]={0,0,0,0};
  GLdouble FuncionesOpenGL::modelview[16]={1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1};
  GLdouble FuncionesOpenGL::projection[16]={1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1};
+ extern  float FactorAmbient,FactorDifusse,FactorSpecular,FactorEmission;
+
 
 
 void FuncionesOpenGL::Print(char s[],int bit)
@@ -302,10 +304,12 @@ void FuncionesOpenGL::material(int cual)
 	GLfloat  mat_diffuse_1[] = { 0.2, 0.25, 0.35, 1.0f};
 	GLfloat mat_specular_1[] = {0.5, 0.05, 0.5, 1.0f};
 
-	float faclara=1.5;
-	GLfloat  mat_ambient_1b[] = {0.15*faclara, 0.15*faclara, 0.25*faclara, 1.0f};
-	GLfloat  mat_diffuse_1b[] = {0.20*faclara, 0.25*faclara, 0.35*faclara, 1.0f};
-	GLfloat mat_specular_1b[] = {0.50        , 0.05*faclara, 0.5         , 1.0f};
+	float faclara=1.7;
+	GLfloat  mat_ambient_1b[] = {0.3*faclara*FactorAmbient, 0.3*faclara*FactorAmbient, 0.50*faclara*FactorAmbient, 1.0f};
+	GLfloat  mat_diffuse_1b[] = {0.20*faclara*0.4*FactorDifusse, 0.25*faclara*0.4*FactorDifusse, 0.35*faclara*0.4*FactorDifusse, 1.0f};
+	GLfloat mat_specular_1b[] = {0.05*FactorSpecular        , 0.2*FactorSpecular          , 0.05*FactorSpecular         , 1.0f};
+	GLfloat mat_emission_1b[] = {0.15*.5*FactorEmission         , 0.15*.5*FactorEmission         , 0.15*.6*FactorEmission       , 1.0f};
+
 	
 	switch (cual) 
 	{
@@ -345,7 +349,7 @@ void FuncionesOpenGL::material(int cual)
 		glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT , mat_ambient_1b);
 		glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE , mat_diffuse_1b);
 		glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, mat_specular_1b);
-		glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, mat_ambient_1b);
+		glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, mat_emission_1b);
 		break;
 	case 12:
 		glMaterialf (GL_FRONT_AND_BACK, GL_SHININESS, 10.1f);
