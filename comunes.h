@@ -278,9 +278,16 @@ void DrawGraphics()
 
 	 */
 
-	// Set location in front of camera
+
+
+//	glMatrixMode(GL_PROJECTION);
+//	glLoadIdentity();
+//	glOrtho(-10, 10,	-10, 10, -1000, 1000);
+	glMatrixMode(GL_MODELVIEW);
+
+
 	glLoadIdentity();
-	glTranslated( 0, 0, -5);
+	glTranslated( 0, -1, -10);
 
 	FuncionesOpenGL::ActivaLuz0();
 	glShadeModel(GL_SMOOTH);

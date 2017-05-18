@@ -1205,6 +1205,13 @@ void control_cb( int control )
 
 	if (control==1001) Calculo_EtapaS();
 
+	if (control==9001) { // TestDeVariables
+		vecUEsfera[0]=0;
+		vecUEsfera[1]=0;
+		vecUEsfera[2]=0;
+	}
+
+
 	if (control==10001) {
 		char *str,str2[1000],str3[1000];
 		str=(char *)Glui3_EditParametros->get_text();
@@ -1754,6 +1761,7 @@ void   formulario_glui()
 void TesteDeVariablesGlobales() {
 
 	GLUI_Spinner *tsp;
+	GLUI_Panel *ptmp2;
 	///// Test de algunas Variables
 	tsp=glui->add_spinner("FactorNormales",GLUI_SPINNER_FLOAT, &FactorNormales);
 	tsp->set_float_limits(0,1000);
@@ -1784,6 +1792,13 @@ void TesteDeVariablesGlobales() {
 
 
 
+
+
+	ptmp2 = glui->add_panel("",GLUI_PANEL_RAISED);
+	glui->add_button_to_panel(ptmp2,"Reset centro", 9001 ,control_cb );
+	glui->add_column_to_panel(ptmp2,false);
+	glui->add_column_to_panel(ptmp2,false);
+	glui->add_button_to_panel(ptmp2,"Reset centro2", 9001 ,control_cb );
 
 
 

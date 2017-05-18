@@ -49,7 +49,7 @@ float FactorAmbient=1,FactorDifusse=1,FactorSpecular=1,FactorEmission=1;
 
 //Plano del clipping
 //float Ax=0,By=-100,Cz=0,DD=-0.095;
-float Ax=0,By=0,Cz=10,DD=0.0;
+float Ax=0,By=0,Cz=10,DD=-0.01;
 float TLimite=40;
 int TLimite_if=1;
 
