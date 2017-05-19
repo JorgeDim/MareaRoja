@@ -81,6 +81,10 @@ void FuncionesOpenGL::ejes()
 void FuncionesOpenGL::Win2World(GLfloat WinX ,GLfloat WinY,GLfloat WinZ, GLdouble *posX,GLdouble *posY,GLdouble *posZ)
 {
 
+	glGetDoublev( GL_MODELVIEW_MATRIX, modelview );
+	glGetDoublev( GL_PROJECTION_MATRIX, projection );
+	glGetIntegerv( GL_VIEWPORT, viewport );
+
 	gluUnProject( WinX, WinY, WinZ, modelview, projection, viewport, posX, posY, posZ);
 }
 void FuncionesOpenGL::World2Win(GLdouble posX,GLdouble posY,GLdouble posZ, GLdouble *WinX ,GLdouble *WinY,GLdouble *WinZ)

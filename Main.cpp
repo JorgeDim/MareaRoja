@@ -1211,6 +1211,52 @@ void control_cb( int control )
 		vecUEsfera[2]=0;
 	}
 
+	if (control==9002) { // TestDeVariables
+
+
+		cout<<"M \nGlobalOldFovy="<<GlobalOldFovy<<" GlobalFovy="<<GlobalFovy<<endl;
+		cout<<"M AvecUEsfera=["<<vecUEsfera[0]<<","<<vecUEsfera[1]<<","<<vecUEsfera[2]<<","<<vecUEsfera[3]<<"]"<<endl;
+
+
+		glMatrixMode(GL_PROJECTION);
+		glLoadIdentity();
+		gluPerspective((GLdouble)GlobalOldFovy, aspect, (GLdouble)1, (GLdouble)100.0);
+		glTranslated( 0, 0, -10);
+
+		glGetDoublev( GL_PROJECTION_MATRIX, FuncionesOpenGL::projection );
+		//Coordenadas screen= Projection*(Old)vecU
+		glMatrixMode(GL_MODELVIEW);
+		glLoadIdentity();
+		glTranslated( 0, -1, -10);
+		glGetDoublev( GL_PROJECTION_MATRIX, FuncionesOpenGL::modelview);
+
+		MatrizTrXvector4(FuncionesOpenGL::modelview,vecUEsfera,vecDUEsfera);  //Eye_Coord
+		MatrizTrXvector4(FuncionesOpenGL::projection,vecDUEsfera,vecUEsfera); //Clip_Coord
+//		vecUEsfera[0] /= vecUEsfera[3];
+//		vecUEsfera[1] /= vecUEsfera[3];
+//		vecUEsfera[2] /= vecUEsfera[3];
+//		vecUEsfera[3] /= vecUEsfera[3];
+		cout<<"M BvecDUEsfera=["<<vecDUEsfera[0]<<","<<vecDUEsfera[1]<<","<<vecDUEsfera[2]<<","<<vecDUEsfera[3]<<"]"<<endl;
+		cout<<"M CvecUEsfera=["<<vecUEsfera[0]<<","<<vecUEsfera[1]<<","<<vecUEsfera[2]<<","<<vecUEsfera[3]<<"]"<<endl;
+
+		//Encuentra nuevas matrices
+
+		glMatrixMode(GL_PROJECTION);
+		glLoadIdentity();
+		gluPerspective((GLdouble)GlobalFovy, aspect, (GLdouble)1, (GLdouble)100.0);
+		glTranslated( 0, 0, -10);
+		glGetDoublev( GL_PROJECTION_MATRIX, FuncionesOpenGL::projection );
+
+		InvierteMatriz(FuncionesOpenGL::projection,MatrizINV);
+		MatrizTrXvector4(MatrizINV,vecUEsfera,vecDUEsfera);
+		InvierteMatriz(FuncionesOpenGL::modelview,MatrizINV);
+		MatrizTrXvector4(MatrizINV,vecDUEsfera,vecUEsfera);
+		//		MatrizXvector4(FuncionesOpenGL::projection,vecDUEsfera,vecUEsfera);
+
+		cout<<"M FvecUEsfera=["<<vecUEsfera[0]<<","<<vecUEsfera[1]<<","<<vecUEsfera[2]<<","<<vecUEsfera[3]<<"]"<<endl;
+		GlobalOldFovy=GlobalFovy;
+	}
+
 
 	if (control==10001) {
 		char *str,str2[1000],str3[1000];
@@ -1800,6 +1846,10 @@ void TesteDeVariablesGlobales() {
 	glui->add_column_to_panel(ptmp2,false);
 	glui->add_button_to_panel(ptmp2,"Reset centro2", 9001 ,control_cb );
 
+
+	tsp=glui->add_spinner("Fovy",GLUI_SPINNER_FLOAT, &GlobalFovy, 9002 ,control_cb);
+	tsp->set_float_limits(0,180);
+	tsp->set_speed(1);
 
 
 }

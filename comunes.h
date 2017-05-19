@@ -283,9 +283,19 @@ void DrawGraphics()
 //	glMatrixMode(GL_PROJECTION);
 //	glLoadIdentity();
 //	glOrtho(-10, 10,	-10, 10, -1000, 1000);
+
+
+
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	gluPerspective((GLdouble)GlobalFovy, aspect, (GLdouble)1, (GLdouble)100.0);
+
+//	glViewport(0, 0, width, height);
+	    glTranslated( 0, 0, -10);
+
+
+
 	glMatrixMode(GL_MODELVIEW);
-
-
 	glLoadIdentity();
 	glTranslated( 0, -1, -10);
 
@@ -581,6 +591,21 @@ void MatrizXvector4(GLfloat *mat,GLfloat *vec,GLfloat *resultado) {
 }
 
 
+void MatrizXvector4(GLdouble *mat,GLfloat *vec,GLfloat *resultado) {
+	resultado[0]=mat[0]*vec[0] + mat[4]*vec[1] + mat[ 8]*vec[2] + mat[12]*vec[3];
+	resultado[1]=mat[1]*vec[0] + mat[5]*vec[1] + mat[ 9]*vec[2] + mat[13]*vec[3];
+	resultado[2]=mat[2]*vec[0] + mat[6]*vec[1] + mat[10]*vec[2] + mat[14]*vec[3];
+	resultado[3]=mat[3]*vec[0] + mat[7]*vec[1] + mat[11]*vec[2] + mat[15]*vec[3];
+}
+
+void MatrizTrXvector4(GLdouble *mat,GLfloat *vec,GLfloat *resultado) {
+	resultado[0]=mat[ 0]*vec[0] + mat[ 1]*vec[1] + mat[ 2]*vec[2] + mat[ 3]*vec[3];
+	resultado[1]=mat[ 4]*vec[0] + mat[ 5]*vec[1] + mat[ 6]*vec[2] + mat[ 7]*vec[3];
+	resultado[2]=mat[ 8]*vec[0] + mat[ 9]*vec[1] + mat[10]*vec[2] + mat[11]*vec[3];
+	resultado[3]=mat[12]*vec[0] + mat[13]*vec[1] + mat[14]*vec[2] + mat[15]*vec[3];
+}
+
+
 void ZGlobal(double*v) {
 	v[0]=MatrizRotacionGlobalINV[8];
 	v[1]=MatrizRotacionGlobalINV[9];
@@ -752,11 +777,11 @@ void ResizeGraphics(int lwidth, int lheight)
 	aspect = (GLfloat) width / height;
 
 	// Adjust graphics to window size
-	glViewport(tx, ty, width, height);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluPerspective((GLdouble)45.0, aspect, (GLdouble)1, (GLdouble)100.0);
-	//    glTranslated( 0, 0, -10);
+	gluPerspective((GLdouble)GlobalFovy, aspect, (GLdouble)1, (GLdouble)100.0);
+	glViewport(tx, ty, width, height);
+	    glTranslated( 0, 0, -10);
 	glMatrixMode(GL_MODELVIEW);
 	FuncionesOpenGL::projection_calculado=false;
 	FuncionesOpenGL::viewport_calculado=false;
@@ -782,6 +807,270 @@ void CB_mouse_whell(int button, int state, int x, int y)
 	}
 	return;
 }
+
+bool gluInvertMatrix(const GLfloat  m[16], GLfloat  invOut[16])
+{
+    double inv[16], det;
+    int i;
+
+    inv[0] = m[5]  * m[10] * m[15] -
+             m[5]  * m[11] * m[14] -
+             m[9]  * m[6]  * m[15] +
+             m[9]  * m[7]  * m[14] +
+             m[13] * m[6]  * m[11] -
+             m[13] * m[7]  * m[10];
+
+    inv[4] = -m[4]  * m[10] * m[15] +
+              m[4]  * m[11] * m[14] +
+              m[8]  * m[6]  * m[15] -
+              m[8]  * m[7]  * m[14] -
+              m[12] * m[6]  * m[11] +
+              m[12] * m[7]  * m[10];
+
+    inv[8] = m[4]  * m[9] * m[15] -
+             m[4]  * m[11] * m[13] -
+             m[8]  * m[5] * m[15] +
+             m[8]  * m[7] * m[13] +
+             m[12] * m[5] * m[11] -
+             m[12] * m[7] * m[9];
+
+    inv[12] = -m[4]  * m[9] * m[14] +
+               m[4]  * m[10] * m[13] +
+               m[8]  * m[5] * m[14] -
+               m[8]  * m[6] * m[13] -
+               m[12] * m[5] * m[10] +
+               m[12] * m[6] * m[9];
+
+    inv[1] = -m[1]  * m[10] * m[15] +
+              m[1]  * m[11] * m[14] +
+              m[9]  * m[2] * m[15] -
+              m[9]  * m[3] * m[14] -
+              m[13] * m[2] * m[11] +
+              m[13] * m[3] * m[10];
+
+    inv[5] = m[0]  * m[10] * m[15] -
+             m[0]  * m[11] * m[14] -
+             m[8]  * m[2] * m[15] +
+             m[8]  * m[3] * m[14] +
+             m[12] * m[2] * m[11] -
+             m[12] * m[3] * m[10];
+
+    inv[9] = -m[0]  * m[9] * m[15] +
+              m[0]  * m[11] * m[13] +
+              m[8]  * m[1] * m[15] -
+              m[8]  * m[3] * m[13] -
+              m[12] * m[1] * m[11] +
+              m[12] * m[3] * m[9];
+
+    inv[13] = m[0]  * m[9] * m[14] -
+              m[0]  * m[10] * m[13] -
+              m[8]  * m[1] * m[14] +
+              m[8]  * m[2] * m[13] +
+              m[12] * m[1] * m[10] -
+              m[12] * m[2] * m[9];
+
+    inv[2] = m[1]  * m[6] * m[15] -
+             m[1]  * m[7] * m[14] -
+             m[5]  * m[2] * m[15] +
+             m[5]  * m[3] * m[14] +
+             m[13] * m[2] * m[7] -
+             m[13] * m[3] * m[6];
+
+    inv[6] = -m[0]  * m[6] * m[15] +
+              m[0]  * m[7] * m[14] +
+              m[4]  * m[2] * m[15] -
+              m[4]  * m[3] * m[14] -
+              m[12] * m[2] * m[7] +
+              m[12] * m[3] * m[6];
+
+    inv[10] = m[0]  * m[5] * m[15] -
+              m[0]  * m[7] * m[13] -
+              m[4]  * m[1] * m[15] +
+              m[4]  * m[3] * m[13] +
+              m[12] * m[1] * m[7] -
+              m[12] * m[3] * m[5];
+
+    inv[14] = -m[0]  * m[5] * m[14] +
+               m[0]  * m[6] * m[13] +
+               m[4]  * m[1] * m[14] -
+               m[4]  * m[2] * m[13] -
+               m[12] * m[1] * m[6] +
+               m[12] * m[2] * m[5];
+
+    inv[3] = -m[1] * m[6] * m[11] +
+              m[1] * m[7] * m[10] +
+              m[5] * m[2] * m[11] -
+              m[5] * m[3] * m[10] -
+              m[9] * m[2] * m[7] +
+              m[9] * m[3] * m[6];
+
+    inv[7] = m[0] * m[6] * m[11] -
+             m[0] * m[7] * m[10] -
+             m[4] * m[2] * m[11] +
+             m[4] * m[3] * m[10] +
+             m[8] * m[2] * m[7] -
+             m[8] * m[3] * m[6];
+
+    inv[11] = -m[0] * m[5] * m[11] +
+               m[0] * m[7] * m[9] +
+               m[4] * m[1] * m[11] -
+               m[4] * m[3] * m[9] -
+               m[8] * m[1] * m[7] +
+               m[8] * m[3] * m[5];
+
+    inv[15] = m[0] * m[5] * m[10] -
+              m[0] * m[6] * m[9] -
+              m[4] * m[1] * m[10] +
+              m[4] * m[2] * m[9] +
+              m[8] * m[1] * m[6] -
+              m[8] * m[2] * m[5];
+
+    det = m[0] * inv[0] + m[1] * inv[4] + m[2] * inv[8] + m[3] * inv[12];
+
+    if (det == 0)
+        return false;
+
+    det = 1.0 / det;
+
+    for (i = 0; i < 16; i++)
+        invOut[i] = inv[i] * det;
+
+    return true;
+}
+
+
+bool InvierteMatriz(const GLdouble  m[16], GLdouble  invOut[16])
+{
+    double inv[16], det;
+    int i;
+
+    inv[0] = m[5]  * m[10] * m[15] -
+             m[5]  * m[11] * m[14] -
+             m[9]  * m[6]  * m[15] +
+             m[9]  * m[7]  * m[14] +
+             m[13] * m[6]  * m[11] -
+             m[13] * m[7]  * m[10];
+
+    inv[4] = -m[4]  * m[10] * m[15] +
+              m[4]  * m[11] * m[14] +
+              m[8]  * m[6]  * m[15] -
+              m[8]  * m[7]  * m[14] -
+              m[12] * m[6]  * m[11] +
+              m[12] * m[7]  * m[10];
+
+    inv[8] = m[4]  * m[9] * m[15] -
+             m[4]  * m[11] * m[13] -
+             m[8]  * m[5] * m[15] +
+             m[8]  * m[7] * m[13] +
+             m[12] * m[5] * m[11] -
+             m[12] * m[7] * m[9];
+
+    inv[12] = -m[4]  * m[9] * m[14] +
+               m[4]  * m[10] * m[13] +
+               m[8]  * m[5] * m[14] -
+               m[8]  * m[6] * m[13] -
+               m[12] * m[5] * m[10] +
+               m[12] * m[6] * m[9];
+
+    inv[1] = -m[1]  * m[10] * m[15] +
+              m[1]  * m[11] * m[14] +
+              m[9]  * m[2] * m[15] -
+              m[9]  * m[3] * m[14] -
+              m[13] * m[2] * m[11] +
+              m[13] * m[3] * m[10];
+
+    inv[5] = m[0]  * m[10] * m[15] -
+             m[0]  * m[11] * m[14] -
+             m[8]  * m[2] * m[15] +
+             m[8]  * m[3] * m[14] +
+             m[12] * m[2] * m[11] -
+             m[12] * m[3] * m[10];
+
+    inv[9] = -m[0]  * m[9] * m[15] +
+              m[0]  * m[11] * m[13] +
+              m[8]  * m[1] * m[15] -
+              m[8]  * m[3] * m[13] -
+              m[12] * m[1] * m[11] +
+              m[12] * m[3] * m[9];
+
+    inv[13] = m[0]  * m[9] * m[14] -
+              m[0]  * m[10] * m[13] -
+              m[8]  * m[1] * m[14] +
+              m[8]  * m[2] * m[13] +
+              m[12] * m[1] * m[10] -
+              m[12] * m[2] * m[9];
+
+    inv[2] = m[1]  * m[6] * m[15] -
+             m[1]  * m[7] * m[14] -
+             m[5]  * m[2] * m[15] +
+             m[5]  * m[3] * m[14] +
+             m[13] * m[2] * m[7] -
+             m[13] * m[3] * m[6];
+
+    inv[6] = -m[0]  * m[6] * m[15] +
+              m[0]  * m[7] * m[14] +
+              m[4]  * m[2] * m[15] -
+              m[4]  * m[3] * m[14] -
+              m[12] * m[2] * m[7] +
+              m[12] * m[3] * m[6];
+
+    inv[10] = m[0]  * m[5] * m[15] -
+              m[0]  * m[7] * m[13] -
+              m[4]  * m[1] * m[15] +
+              m[4]  * m[3] * m[13] +
+              m[12] * m[1] * m[7] -
+              m[12] * m[3] * m[5];
+
+    inv[14] = -m[0]  * m[5] * m[14] +
+               m[0]  * m[6] * m[13] +
+               m[4]  * m[1] * m[14] -
+               m[4]  * m[2] * m[13] -
+               m[12] * m[1] * m[6] +
+               m[12] * m[2] * m[5];
+
+    inv[3] = -m[1] * m[6] * m[11] +
+              m[1] * m[7] * m[10] +
+              m[5] * m[2] * m[11] -
+              m[5] * m[3] * m[10] -
+              m[9] * m[2] * m[7] +
+              m[9] * m[3] * m[6];
+
+    inv[7] = m[0] * m[6] * m[11] -
+             m[0] * m[7] * m[10] -
+             m[4] * m[2] * m[11] +
+             m[4] * m[3] * m[10] +
+             m[8] * m[2] * m[7] -
+             m[8] * m[3] * m[6];
+
+    inv[11] = -m[0] * m[5] * m[11] +
+               m[0] * m[7] * m[9] +
+               m[4] * m[1] * m[11] -
+               m[4] * m[3] * m[9] -
+               m[8] * m[1] * m[7] +
+               m[8] * m[3] * m[5];
+
+    inv[15] = m[0] * m[5] * m[10] -
+              m[0] * m[6] * m[9] -
+              m[4] * m[1] * m[10] +
+              m[4] * m[2] * m[9] +
+              m[8] * m[1] * m[6] -
+              m[8] * m[2] * m[5];
+
+    det = m[0] * inv[0] + m[1] * inv[4] + m[2] * inv[8] + m[3] * inv[12];
+
+    if (det == 0)
+        return false;
+
+    det = 1.0 / det;
+
+    for (i = 0; i < 16; i++)
+        invOut[i] = inv[i] * det;
+
+    return true;
+}
+
+
+
 void CB_mouse(int button, int state, int x, int y)
 {
 	xPos0 = x;
@@ -791,6 +1080,7 @@ void CB_mouse(int button, int state, int x, int y)
 	myfileDBG<<"CB_mouse: B="<<button<<" st="<<state<<" x="<<x<<" y="<<y<<endl;
 #endif
 
+	cout<<"M CB_mouse(int "<<button<<", int "<<state<<", int "<<x<<", int "<<y<<")"<<endl;
 	//	printf("CB_mouse: button=%d, state=%d, x=%d, y=%d\n",button,state,x,y);
 	KeyControlAltShift = glutGetModifiers();
 	//printf("glutGetModifiers=%d",KeyControlAltShift);	cout<<endl;
@@ -860,38 +1150,35 @@ void CB_mouse(int button, int state, int x, int y)
 
 
 				//float x=xPos0,y=yPos0;
-				GLint viewport[4];
-				GLdouble modelview[16];
-				GLdouble projection[16];
 				GLfloat winX, winY, winZ;
 				GLdouble posX, posY, posZ;
 
-				/*
-			glGetDoublev( GL_MODELVIEW_MATRIX, modelview );
-			glGetDoublev( GL_PROJECTION_MATRIX, projection );
-			glGetIntegerv( GL_VIEWPORT, viewport );
-				 */
+
 				FuncionesOpenGL::ObtieneMatrices();
 
 				winX = (float)x;
 				winY = (float)FuncionesOpenGL::viewport[3] - (float)y;
+//				winY = -(float)y;
 				glReadPixels( x, int(winY), 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &winZ );
 
 				FuncionesOpenGL::Win2World(winX, winY, winZ, &posX, &posY, &posZ);
 				//gluUnProject( winX, winY, winZ, modelview, projection, viewport, &posX, &posY, &posZ);
 
-				printf("%f %f %f\n",posX,posY,posZ);
+				cout<<"M posX,Y,Z="<<posX<<" "<<posY<<" "<<posZ<<endl;
 				vecDXEsfera[0]=posX-vecXEsfera[0];
 				vecDXEsfera[1]=posY-vecXEsfera[1];
 				vecDXEsfera[2]=posZ-vecXEsfera[2];
 				vecXEsfera[0]=posX;
 				vecXEsfera[1]=posY;
 				vecXEsfera[2]=posZ;
-				//          vecXEsfera[3]=1;
+
+				cout<<"M vecUEsfera=["<<vecUEsfera[0]<<","<<vecUEsfera[1]<<","<<vecUEsfera[2]<<"]"<<endl;
+				gluInvertMatrix(MatrizRotacionGlobal,MatrizRotacionGlobalINV);
 				MatrizXvector4(MatrizRotacionGlobal,vecDXEsfera,vecDUEsfera);
-				vecUEsfera[0]+=Escala*vecDUEsfera[0];
-				vecUEsfera[1]+=Escala*vecDUEsfera[1];
-				vecUEsfera[2]+=Escala*vecDUEsfera[2];
+				vecUEsfera[0]+=vecDUEsfera[0]*Escala;
+				vecUEsfera[1]+=vecDUEsfera[1]*Escala;
+				vecUEsfera[2]+=vecDUEsfera[2]*Escala;
+				cout<<"M vecUEsfera=["<<vecUEsfera[0]<<","<<vecUEsfera[1]<<","<<vecUEsfera[2]<<"]"<<endl;
 			}
 		}
 

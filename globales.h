@@ -41,7 +41,7 @@ double FactorCercania=0.90;
 float FactorAchica=0.05,FactorZ=1.0;
 
 float FactorAmbient=1,FactorDifusse=1,FactorSpecular=1,FactorEmission=1;
-
+float GlobalFovy=30,GlobalOldFovy=30;
 
 
 
@@ -172,6 +172,7 @@ float Escala=1;
 GLfloat   MatrizRotacionGlobal0[16]   ={1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1};
 GLfloat   MatrizRotacionGlobal[16]   ={1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1};
 GLfloat   MatrizRotacionGlobalINV[16]={1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1};
+GLdouble   MatrizINV[16]={1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1};
 GLfloat   MatrizTraslacionGlobal[16] ={1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1};
 GLfloat   vecXEsfera[4]={0,0,0,1},vecDXEsfera[4];
 GLfloat   vecUEsfera[4]={0,0,0,1},vecDUEsfera[4];
