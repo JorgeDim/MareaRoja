@@ -290,10 +290,12 @@ void TriPrisma::DrawCentro() {
 	double x[6],y[6],z[6],nx,ny,nz;
 	int i;
 	float lambda=GlobalCentros;
+	float lambdaZ=sqrt(GlobalCentros)*1;
+	if (lambdaZ>1)lambdaZ=1;
 	for (i=0;i<6;i++) {
 		x[i]=lambda*papa->v3D[iv[i]].x+(1-lambda)*centro.x;
 		y[i]=lambda*papa->v3D[iv[i]].y+(1-lambda)*centro.y;
-		z[i]=lambda*papa->v3D[iv[i]].z+(1-lambda)*centro.z;
+		z[i]=lambdaZ*papa->v3D[iv[i]].z+(1-lambdaZ)*centro.z;
 	}
 	glBegin(GL_TRIANGLES );
 
@@ -2753,7 +2755,7 @@ void grid3D::drawGL()
 		}
 	else
 		for (i=0;i<nCaras;i++) {
-			if (Cara[i].centro.z<-0.001)
+			if (Cara[i].centro.z<-0.000001)
 				Cara[i].drawGL();
 		}
 
