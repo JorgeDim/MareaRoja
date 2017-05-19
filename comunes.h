@@ -304,12 +304,13 @@ void DrawGraphics()
 
 	glTranslatef(vecUEsfera[0], vecUEsfera[1],vecUEsfera[2]);
 
+	FuncionesOpenGL::material(0);   FuncionesOpenGL::esfera(0.002*GlobalFovy,20);
 
 	glScalef(Escala, Escala, Escala);
 	glMultMatrixf((GLfloat *)MatrizRotacionGlobal);
 	glScalef(1, 1, FactorZ);
 	//Cursor centro
-	FuncionesOpenGL::material(0);   FuncionesOpenGL::esfera(0.002,20);
+	//FuncionesOpenGL::material(0);   FuncionesOpenGL::esfera(0.002,20);
 	glTranslatef(-vecXEsfera[0],-vecXEsfera[1],-vecXEsfera[2]);
 
 	if (DBG) cout<<"DrawGraphics()209"<<endl;
@@ -1212,11 +1213,33 @@ void CB_motion(int x, int y)
 	switch (lMODO_de_mover)
 	{
 	case 0: //Trasladar
-		dx=(xPos-xPos0+0.0)/width*10;
-		dy=-(yPos-yPos0+0.0)/height*10;
+		dx=(xPos-xPos0+0.0);
+		dy=-(yPos-yPos0+0.0);
+		double dxE,dyE,dzE,xP,yP,zP;
 
-		vecUEsfera[0] +=dx;
-		vecUEsfera[1] +=dy;
+		cout <<"M \ndxy=["<<dx<<" , "<<dy<<endl;
+		cout<<"M A1 vecUEsfera=["<<vecUEsfera[0]<<","<<vecUEsfera[1]<<","<<vecUEsfera[2]<<","<<vecUEsfera[3]<<"]"<<endl;
+
+
+		glMatrixMode(GL_PROJECTION);
+		glLoadIdentity();
+		gluPerspective((GLdouble)GlobalFovy, aspect, (GLdouble)1, (GLdouble)100.0);
+		glTranslated( 0, 0, -10);
+		glMatrixMode(GL_MODELVIEW);
+		glLoadIdentity();
+		glTranslated( 0, -1, -10);
+
+		FuncionesOpenGL::World2Win((GLdouble)vecUEsfera[0], (GLdouble)vecUEsfera[1], (GLdouble)vecUEsfera[2],
+				&xP,&yP,&zP);
+		cout<<"M xyzP=[ "<<xP<<" , "<<yP<<" , "<<zP<<" ]"<<endl;
+
+		FuncionesOpenGL::Win2World(xP+dx, yP+dy, zP, &dxE, &dyE, &dzE);
+		cout <<"M dxyzE=["<<dxE<<" , "<<dyE<<" , "<<dzE<<endl;
+
+		vecUEsfera[0] =dxE;
+		vecUEsfera[1] =dyE;
+		vecUEsfera[2] =dzE;
+		cout<<"M A2 vecUEsfera=["<<vecUEsfera[0]<<","<<vecUEsfera[1]<<","<<vecUEsfera[2]<<","<<vecUEsfera[3]<<"]"<<endl;
 		FuncionesOpenGL::modelview_calculado=false;
 		break;
 	case 1: //Rotar

@@ -41,7 +41,7 @@ double FactorCercania=0.90;
 float FactorAchica=0.05,FactorZ=1.0;
 
 float FactorAmbient=1,FactorDifusse=1,FactorSpecular=1,FactorEmission=1;
-float GlobalFovy=30,GlobalOldFovy=30;
+float GlobalFovy=30,GlobalOldFovy=30,GlobalCentros=0.05;
 
 
 

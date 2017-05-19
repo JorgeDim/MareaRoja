@@ -30,6 +30,7 @@ extern GLUI_TextBox *glui_edittext;
 extern int Etapa;
 
 extern ofstream myfileSalida;
+extern float GlobalCentros;
 
 
 
@@ -273,9 +274,80 @@ void Hexa3D::save(ofstream &myfile) {
 
 }
 
-void TriPrisma::save(ofstream &myfile) {
+void TriPrisma::DrawCentro() {
 
+	// Prisma de base Triangular:
+	//    5
+	//   /|\
+	//  / | \
+	// 3-----4
+	// |  |  |
+	// |  2  |
+	// | / \ |
+	// |/   \|
+	// 0-----1
 
+	double x[6],y[6],z[6],nx,ny,nz;
+	int i;
+	float lambda=GlobalCentros;
+	for (i=0;i<6;i++) {
+		x[i]=lambda*papa->v3D[iv[i]].x+(1-lambda)*centro.x;
+		y[i]=lambda*papa->v3D[iv[i]].y+(1-lambda)*centro.y;
+		z[i]=lambda*papa->v3D[iv[i]].z+(1-lambda)*centro.z;
+	}
+	glBegin(GL_TRIANGLES );
+
+	nx=(y[1]-y[0])*(z[2]-z[0])-(z[1]-z[0])*(y[2]-y[0]);
+	ny=(z[1]-z[0])*(x[2]-x[0])-(x[1]-x[0])*(z[2]-z[0]);
+	nz=(x[1]-x[0])*(y[2]-y[0])-(y[1]-y[0])*(x[2]-x[0]);
+	glNormal3f(nx, ny, nz);
+	glVertex3d(x[0], y[0],z[0]);
+	glVertex3d(x[2], y[2],z[2]);
+	glVertex3d(x[1], y[1],z[1]);
+	glEnd();
+	glBegin(GL_TRIANGLES );
+	nx=(y[4]-y[3])*(z[5]-z[3])-(z[4]-z[3])*(y[5]-y[3]);
+	ny=(z[4]-z[3])*(x[5]-x[3])-(x[4]-x[3])*(z[5]-z[3]);
+	nz=(x[4]-x[3])*(y[5]-y[3])-(y[4]-y[3])*(x[5]-x[3]);
+	glNormal3f(nx, ny, nz);
+	glVertex3d(x[3], y[3],z[3]);
+	glVertex3d(x[4], y[4],z[4]);
+	glVertex3d(x[5], y[5],z[5]);
+	glEnd();
+	glBegin(GL_QUADS );
+	nx=(y[1]-y[0])*(z[3]-z[0])-(z[1]-z[0])*(y[3]-y[0]);
+	ny=(z[1]-z[0])*(x[3]-x[0])-(x[1]-x[0])*(z[3]-z[0]);
+	nz=(x[1]-x[0])*(y[3]-y[0])-(y[1]-y[0])*(x[3]-x[0]);
+	glNormal3f(nx, ny, nz);
+	glVertex3d(x[0], y[0],z[0]);
+	glVertex3d(x[1], y[1],z[1]);
+	glVertex3d(x[4], y[4],z[4]);
+	glVertex3d(x[3], y[3],z[3]);
+	glEnd();
+	glBegin(GL_QUADS );
+	nx=(y[2]-y[1])*(z[4]-z[1])-(z[2]-z[1])*(y[4]-y[1]);
+	ny=(z[2]-z[1])*(x[4]-x[1])-(x[2]-x[1])*(z[4]-z[1]);
+	nz=(x[2]-x[1])*(y[4]-y[1])-(y[2]-y[1])*(x[4]-x[1]);
+	glNormal3f(nx, ny, nz);
+	glVertex3d(x[1], y[1],z[1]);
+	glVertex3d(x[2], y[2],z[2]);
+	glVertex3d(x[5], y[5],z[5]);
+	glVertex3d(x[4], y[4],z[4]);
+	glEnd();
+	glBegin(GL_QUADS );
+	nx=(y[3]-y[0])*(z[2]-z[0])-(z[3]-z[0])*(y[2]-y[0]);
+	ny=(z[3]-z[0])*(x[2]-x[0])-(x[3]-x[0])*(z[2]-z[0]);
+	nz=(x[3]-x[0])*(y[2]-y[0])-(y[3]-y[0])*(x[2]-x[0]);
+	glNormal3f(nx, ny, nz);
+	glVertex3d(x[0], y[0],z[0]);
+	glVertex3d(x[3], y[3],z[3]);
+	glVertex3d(x[5], y[5],z[5]);
+	glVertex3d(x[2], y[2],z[2]);
+	glEnd();
+
+}
+
+	void TriPrisma::save(ofstream &myfile) {
 	int i;
 	if (binario) {
 		myfile.write((char*)&no,sizeof(no));
@@ -997,13 +1069,6 @@ void grid3D::draw_caraGL(int ii[4])
 
 	//	ZGlobal(v);
 	FuncionesOpenGL::modelview_calculado=false;	
-	/*
-	FuncionesOpenGL::World2Win(xg,yg,zg,&winX,&winY,&winZ);
-	FuncionesOpenGL::World2Win(xg+nxx,yg+nyy,zg+nzz,&winX,&winY,&winZ2);
-	if (winZ2>winZ){ 
-	nxx=-nxx;nyy=-nyy;nzz=-nzz;
-	}
-	 */
 	FuncionesOpenGL::World2Win(x[0],y[0],z[0],&winX1,&winY1,&winZ);
 	FuncionesOpenGL::World2Win(x[1],y[1],z[1],&winX2,&winY2,&winZ);
 	FuncionesOpenGL::World2Win(x[2],y[2],z[2],&winX3,&winY3,&winZ);
@@ -1011,10 +1076,6 @@ void grid3D::draw_caraGL(int ii[4])
 		nxx=-nxx;nyy=-nyy;nzz=-nzz;
 	}
 
-	/*		if (nxx*v[0]+nyy*v[1]+nzz*v[2]<0){ 
-	nxx=-nxx;nyy=-nyy;nzz=-nzz;
-	}
-	 */
 
 	glEnable(GL_NORMALIZE);
 	glBegin(GL_QUADS);
@@ -2486,7 +2547,8 @@ void Cara3D::drawGL()
 		glTranslatef(-centro.x,-centro.y,-centro.z);
 	}
 	if (ModoDibujaFrontera && nVolumenes ==1) {
-		FuncionesOpenGL::material(iBC+10);
+//		FuncionesOpenGL::material(iBC+10);
+		FuncionesOpenGL::material(1);
 		draw_caraGL();
 	}
 	if (ModoDibujaInterior && nVolumenes >1) {
@@ -2668,9 +2730,12 @@ void grid3D::drawGL()
 				glTranslatef(-h3D[i].centro.x,-h3D[i].centro.y,-h3D[i].centro.z);
 			}
 			for (i=0;i<nTriPrisma3D;i++) {
-				glTranslatef(TriPrisma3D[i].centro.x,TriPrisma3D[i].centro.y,TriPrisma3D[i].centro.z);
-				FuncionesOpenGL::material(1);   FuncionesOpenGL::esfera(0.001,3);
-				glTranslatef(-TriPrisma3D[i].centro.x,-TriPrisma3D[i].centro.y,-TriPrisma3D[i].centro.z);
+
+//				glTranslatef(TriPrisma3D[i].centro.x,TriPrisma3D[i].centro.y,TriPrisma3D[i].centro.z);
+				FuncionesOpenGL::ColorF3(0.5*(i%3), 0);
+//				FuncionesOpenGL::esfera(0.001,3);
+				TriPrisma3D[i].DrawCentro();
+//				glTranslatef(-TriPrisma3D[i].centro.x,-TriPrisma3D[i].centro.y,-TriPrisma3D[i].centro.z);
 			}
 		}
 		if (DBG) cout<<"grid3D::drawGL()1600"<<endl;
@@ -2688,7 +2753,8 @@ void grid3D::drawGL()
 		}
 	else
 		for (i=0;i<nCaras;i++) {
-			Cara[i].drawGL();
+			if (Cara[i].centro.z<-0.001)
+				Cara[i].drawGL();
 		}
 
 #endif

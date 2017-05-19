@@ -158,6 +158,7 @@ public:
 	void draw_caraGL(vector<double> F,double,double,int ,int,int,int);
 	void draw_edgeGL(int i0,int i1);
 	void CalculaVolumen();
+	void DrawCentro();
 };
 
 

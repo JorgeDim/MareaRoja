@@ -1215,13 +1215,36 @@ void control_cb( int control )
 
 
 		cout<<"M \nGlobalOldFovy="<<GlobalOldFovy<<" GlobalFovy="<<GlobalFovy<<endl;
-		cout<<"M AvecUEsfera=["<<vecUEsfera[0]<<","<<vecUEsfera[1]<<","<<vecUEsfera[2]<<","<<vecUEsfera[3]<<"]"<<endl;
+		cout<<"M A1 vecUEsfera=["<<vecUEsfera[0]<<","<<vecUEsfera[1]<<","<<vecUEsfera[2]<<","<<vecUEsfera[3]<<"]"<<endl;
 
 
+#if (1==1)
+		GLdouble xP,yP,zP,xW,yW,zW;
 		glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();
 		gluPerspective((GLdouble)GlobalOldFovy, aspect, (GLdouble)1, (GLdouble)100.0);
 		glTranslated( 0, 0, -10);
+
+		glMatrixMode(GL_MODELVIEW);
+		glLoadIdentity();
+		glTranslated( 0, -1, -10);
+
+		FuncionesOpenGL::World2Win((GLdouble)vecUEsfera[0], (GLdouble)vecUEsfera[1], (GLdouble)vecUEsfera[2],
+				&xP,&yP,&zP);
+		cout<<"M xyzP=[ "<<xP<<" , "<<yP<<" , "<<zP<<" ]"<<endl;
+		cout<<"M A2 vecUEsfera=["<<vecUEsfera[0]<<","<<vecUEsfera[1]<<","<<vecUEsfera[2]<<","<<vecUEsfera[3]<<"]"<<endl;
+		glMatrixMode(GL_PROJECTION);
+		glLoadIdentity();
+		gluPerspective((GLdouble)GlobalFovy, aspect, (GLdouble)1, (GLdouble)100.0);
+		glTranslated( 0, 0, -10);
+		FuncionesOpenGL::Win2World(xP,yP,zP, &xW,&yW,&zW);
+		vecUEsfera[0]=xW;
+		vecUEsfera[1]=yW;
+		vecUEsfera[2]=zW;
+		cout<<"M A3 vecUEsfera=["<<vecUEsfera[0]<<","<<vecUEsfera[1]<<","<<vecUEsfera[2]<<","<<vecUEsfera[3]<<"]"<<endl;
+
+
+#else
 
 		glGetDoublev( GL_PROJECTION_MATRIX, FuncionesOpenGL::projection );
 		//Coordenadas screen= Projection*(Old)vecU
@@ -1252,8 +1275,11 @@ void control_cb( int control )
 		InvierteMatriz(FuncionesOpenGL::modelview,MatrizINV);
 		MatrizTrXvector4(MatrizINV,vecDUEsfera,vecUEsfera);
 		//		MatrizXvector4(FuncionesOpenGL::projection,vecDUEsfera,vecUEsfera);
+#endif
 
+		cout<<"M BvecDUEsfera=["<<vecDUEsfera[0]<<","<<vecDUEsfera[1]<<","<<vecDUEsfera[2]<<","<<vecDUEsfera[3]<<"]"<<endl;
 		cout<<"M FvecUEsfera=["<<vecUEsfera[0]<<","<<vecUEsfera[1]<<","<<vecUEsfera[2]<<","<<vecUEsfera[3]<<"]"<<endl;
+			Escala *= GlobalFovy/GlobalOldFovy;
 		GlobalOldFovy=GlobalFovy;
 	}
 
@@ -1848,7 +1874,11 @@ void TesteDeVariablesGlobales() {
 
 
 	tsp=glui->add_spinner("Fovy",GLUI_SPINNER_FLOAT, &GlobalFovy, 9002 ,control_cb);
-	tsp->set_float_limits(0,180);
+	tsp->set_float_limits(0.001,90);
+	tsp->set_speed(1);
+
+	tsp=glui->add_spinner("SizeCentros",GLUI_SPINNER_FLOAT, &GlobalCentros);
+	tsp->set_float_limits(0.001,1);
 	tsp->set_speed(1);
 
 

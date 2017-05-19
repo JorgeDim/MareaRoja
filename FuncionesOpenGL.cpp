@@ -90,6 +90,9 @@ void FuncionesOpenGL::Win2World(GLfloat WinX ,GLfloat WinY,GLfloat WinZ, GLdoubl
 void FuncionesOpenGL::World2Win(GLdouble posX,GLdouble posY,GLdouble posZ, GLdouble *WinX ,GLdouble *WinY,GLdouble *WinZ)
 {
 
+	glGetDoublev( GL_MODELVIEW_MATRIX, modelview );
+	glGetDoublev( GL_PROJECTION_MATRIX, projection );
+	glGetIntegerv( GL_VIEWPORT, viewport );
 	gluProject( posX, posY, posZ, modelview, projection, viewport, WinX, WinY, WinZ );
 }
 
@@ -320,7 +323,7 @@ void FuncionesOpenGL::material(int cual)
 	float faclara=1.7;
 	GLfloat  mat_ambient_1b[] = {0.3*faclara*FactorAmbient, 0.3*faclara*FactorAmbient, 0.50*faclara*FactorAmbient, 1.0f};
 	GLfloat  mat_diffuse_1b[] = {0.20*faclara*0.4*FactorDifusse, 0.25*faclara*0.4*FactorDifusse, 0.35*faclara*0.4*FactorDifusse, 1.0f};
-	GLfloat mat_specular_1b[] = {0.05*FactorSpecular        , 0.2*FactorSpecular          , 0.05*FactorSpecular         , 1.0f};
+	GLfloat mat_specular_1b[] = {0.03*FactorSpecular        , 0.1*FactorSpecular          , 0.02*FactorSpecular         , 1.0f};
 	GLfloat mat_emission_1b[] = {0.15*.5*FactorEmission         , 0.15*.5*FactorEmission         , 0.15*.6*FactorEmission       , 1.0f};
 
 	
