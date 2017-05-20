@@ -1845,7 +1845,7 @@ void TesteDeVariablesGlobales() {
 	tsp->set_float_limits(0,1000);
 	tsp->set_speed(0.1);
 
-
+/*
 	tsp=glui->add_spinner("Ambient",GLUI_SPINNER_FLOAT, &FactorAmbient);
 	tsp->set_float_limits(0,3);
 	tsp->set_speed(0.1);
@@ -1862,7 +1862,7 @@ void TesteDeVariablesGlobales() {
 	tsp->set_float_limits(0,3);
 	tsp->set_speed(0.1);
 
-
+*/
 
 
 
