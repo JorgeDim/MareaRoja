@@ -2766,7 +2766,7 @@ void grid3D::drawGL()
 		}
 	else
 		for (i=0;i<nCaras;i++) {
-			if (Cara[i].centro.z<-1000.000001) // TODO CAPA SUPERIOR
+			if (Cara[i].centro.z<1000.000001) // TODO CAPA SUPERIOR
 				Cara[i].drawGL();
 		}
 

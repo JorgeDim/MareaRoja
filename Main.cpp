@@ -470,7 +470,7 @@ void Calculo_EtapaS(int inicializa)
 	llamar_etapa_Siguiente_PAUSA2=0;
 
 	caso=2;
-	CasoLectura=3;
+	CasoLectura=3; //1:LeeMatlab, 3:Leebinario
 	int step=1000;
 
 	if (Etapa==iEtapa) {
