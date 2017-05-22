@@ -295,7 +295,7 @@ void TriPrisma::DrawCentro() {
 	for (i=0;i<6;i++) {
 		x[i]=lambda*papa->v3D[iv[i]].x+(1-lambda)*centro.x;
 		y[i]=lambda*papa->v3D[iv[i]].y+(1-lambda)*centro.y;
-		z[i]=lambdaZ*papa->v3D[iv[i]].z+(1-lambdaZ)*centro.z;
+		z[i]=lambda*papa->v3D[iv[i]].z+(1-lambda)*centro.z;
 	}
 	glBegin(GL_TRIANGLES );
 
@@ -353,19 +353,19 @@ void TriPrisma::DrawCentro() {
 	int i;
 	if (binario) {
 		myfile.write((char*)&no,sizeof(no));
-		cout<<"sizeof(iv)="<<sizeof(iv)<<endl;
+//		cout<<"sizeof(iv)="<<sizeof(iv)<<endl;
 		myfile.write((char*)iv,sizeof(iv));
-		cout<<"2sizeof(icara)="<<sizeof(icara)<<endl;
+//		cout<<"2sizeof(icara)="<<sizeof(icara)<<endl;
 		myfile.write((char*)icara,sizeof(icara));
 		centro.save(myfile);
 
 		int psize=Poligono.size();
-		cout<<"3sizeof(icara)="<<sizeof(icara)<<endl;
+//		cout<<"3sizeof(icara)="<<sizeof(icara)<<endl;
 		myfile.write((char*)&psize,sizeof(psize));
 		for (i=0;i<   Poligono.size();i++)  Poligono[i].save(myfile);
 
 		psize=vecino.size();
-		cout<<"4sizeof(icara)="<<sizeof(icara)<<endl;
+//		cout<<"4sizeof(icara)="<<sizeof(icara)<<endl;
 		myfile.write((char*)&psize,sizeof(psize));
 		for (i=0;i<     vecino.size();i++) 	myfile.write((char*)vecino[i],sizeof(vecino[i]));
 
@@ -373,10 +373,10 @@ void TriPrisma::DrawCentro() {
 		myfile.write((char*)&psize,sizeof(psize));
 		for (i=0;i<     tipo_vecino.size();i++) 	myfile.write((char*)tipo_vecino[i],sizeof(tipo_vecino[i]));
 
-		cout<<"5sizeof(icara)="<<sizeof(icara)<<endl;
+//		cout<<"5sizeof(icara)="<<sizeof(icara)<<endl;
 		psize=dibujado.size();
 		myfile.write((char*)&psize,sizeof(psize));
-		cout<<"6sizeof(icara)="<<sizeof(icara)<<endl;
+//		cout<<"6sizeof(icara)="<<sizeof(icara)<<endl;
 		for (i=0;i<     dibujado.size();i++) 	myfile.write((char*)dibujado[i],sizeof(dibujado[i]));
 
 	} else {
@@ -1360,15 +1360,26 @@ int grid3D::AddCara3(int ib,int i0,int i1,int i2)
 //Agrega Cara Triangular
 {
 	int i;
+//	if (nCaras<10) {
+//		cout<<"C AddCara3(int ib="<<ib<<",int i0="<<i0<<",int i1="<<i1<<",int i2="<<i2<<")"<<endl;
+//	}
 	i=BuscaCara3( i0, i1, i2);
 	if (i<nCaras) { //Cara existente
+//		if (nCaras<10) {
+//			cout<<"C CaraExistente: i="<<i<<endl;
+//		}
+
 		Cara[i].ih[Cara[i].nVolumenes]=ib;
 		Cara[i].nVolumenes++;
 
 		return(i);
 	}
+	if (nCaras<10) {
+		cout<<"C Nueva Cara: no="<<nCaras<<endl;
+	}
 	Cara.push_back(Cara3D());
 	Cara[nCaras].inicializa(this);
+	Cara[nCaras].no=nCaras;
 	Cara[nCaras].nvCara=3;
 	Cara[nCaras].nVolumenes=1;
 	Cara[nCaras].iv[0]=i0;
@@ -2755,7 +2766,7 @@ void grid3D::drawGL()
 		}
 	else
 		for (i=0;i<nCaras;i++) {
-			if (Cara[i].centro.z<-0.000001)
+			if (Cara[i].centro.z<-1000.000001) // TODO CAPA SUPERIOR
 				Cara[i].drawGL();
 		}
 

@@ -159,7 +159,7 @@ int Modo_DibujaCentroCaras=false;
 int Modo_DibujaCentroBloques=false;
 int MODO_NumeraH=false;
 int MODO_NumeraFF=false;
-int caso=3;
+int caso=3,CasoLectura=1;
 
 int binario=0;
 

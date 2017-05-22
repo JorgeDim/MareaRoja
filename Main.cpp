@@ -154,7 +154,7 @@ void Lectura_Bahia_y_CalculosGeometricosMalla(char * fname) {
 
 
 	gtotal->generaPoligonos2();
-	Modo_DibujaCentroBloques=true;
+//	Modo_DibujaCentroBloques=true;
 //		Modo_DibujaCentroCaras=true;
 	err0=1e-12;
 
@@ -470,6 +470,7 @@ void Calculo_EtapaS(int inicializa)
 	llamar_etapa_Siguiente_PAUSA2=0;
 
 	caso=2;
+	CasoLectura=3;
 	int step=1000;
 
 	if (Etapa==iEtapa) {
@@ -478,7 +479,7 @@ void Calculo_EtapaS(int inicializa)
 		sprintf(fn,"bahia-TriPrismas%d.msh3D",caso);
 		sprintf(fnmsh,"malla_gtotal%d.msh",caso);
 		sprintf(fnbin,"malla_gtotal%d.bin",caso);
-		switch (3){
+		switch (CasoLectura){
 		case 1: //Leeer archivo generado por matlab (leeento)
 			//Lectura_Bahia_y_CalculosGeometricosMalla("bahia-TriPrismas.msh3D");
 			//Lectura_Bahia_y_CalculosGeometricosMalla("bahia-TriPrismas2.msh3D");
