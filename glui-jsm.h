@@ -9,10 +9,10 @@
 		#include "GLUI/glui.h"
 
     #endif
-#elif defined _WIN32 || defined _WIN64
-	#include "GL/freeglut.h"
-	//#include <GL\glut.h>
-	#define GLUI_FREEGLUT 1
+#elif defined _WIN32 || defined _WIN64 || __CYGWIN__
+	//#include "GL/freeglut.h"
+	#include <GL\glut.h>
+	//#define GLUI_FREEGLUT 1
 	//#include "GL/glut.h"
 	#include "GL/glui.h"
 
@@ -47,6 +47,8 @@ public:
     GLUI_List *list2;
     GLUI_Panel *panel;
     GLUI_EditText *EditText_archivo;
+    GLUI_Button *boton_ok;
+    static void control_cb_num( int control );
 	static void control_cb(GLUI_Control*);
     void set_allow_change_dir(int c) { allow_change_dir = c; }
 

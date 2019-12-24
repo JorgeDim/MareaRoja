@@ -105,8 +105,8 @@ GLUI_FileBrowser2::GLUI_FileBrowser2( GLUI_Node *parent,
 
 	this->mensaje1=new GLUI_StaticText(this,"Archivo:");
 
-	this->disk=new GLUI_Listbox(this,"Disco",&var_live_disk,12, cb );
-	this->disk->do_selection(2);
+	this->disk=new GLUI_Listbox(this,"Disco",&var_live_disk,12, this->control_cb_num );
+	this->disk->do_selection(3);
 
 #if defined _WIN32 || defined _WIN64
 	 DWORD drives = GetLogicalDrives();
@@ -150,8 +150,7 @@ GLUI_FileBrowser2::GLUI_FileBrowser2( GLUI_Node *parent,
 	EditText_archivo->set_w(500);
 	if (DBG) std::cout<<"92"<<std::endl;
 
-	new GLUI_Button(this,"OK",7,cb);
-
+	boton_ok=new GLUI_Button(this,"OK",user_id,cb);
 
 	{
 		char cCurrentPath[FILENAME_MAX];
@@ -180,6 +179,14 @@ void  char2LPCWSTR(const char *charstring ,LPCWSTR lpcwstr )
 #endif
 
 
+
+void GLUI_FileBrowser2::control_cb_num( int control )
+{
+
+	printf( "GLUI_FileBrowser2::control_cb_num(%d)", control );cout<<endl;
+}
+
+
 void GLUI_FileBrowser2::control_cb( GLUI_Control *glui_object)
 {
 	static int exec_prev=0;
@@ -199,12 +206,12 @@ void GLUI_FileBrowser2::control_cb( GLUI_Control *glui_object)
 			me->entrando=0;
 			EditText->active=false;
 			me->execute_callback();
-			}
+		}
 	} else {
 
 		exec_prev=0;
 
-		me->fbreaddir(".");
+		me->fbreaddir(me->filtro);
 	}
 
 }
@@ -299,6 +306,9 @@ void GLUI_FileBrowser2::fbreaddir(const char *d) {
 
 	if (!d)
 		return;
+
+
+	strcpy(filtro,d);
 
 #ifdef _WIN32
 
